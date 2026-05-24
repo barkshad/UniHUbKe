@@ -8,9 +8,11 @@ import { cn } from '../lib/utils';
 interface ListingCardProps {
   listing: Listing;
   index?: number;
+  onMouseEnter?: () => void;
+  onMouseLeave?: () => void;
 }
 
-export const ListingCard: React.FC<ListingCardProps> = ({ listing, index = 0 }) => {
+export const ListingCard: React.FC<ListingCardProps> = ({ listing, index = 0, onMouseEnter, onMouseLeave }) => {
   return (
     <motion.div
       layout
@@ -19,6 +21,8 @@ export const ListingCard: React.FC<ListingCardProps> = ({ listing, index = 0 }) 
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.5, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
       className="group relative"
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
     >
       <Link to={`/listings/${listing.id}`} className="block h-full outline-none">
         <div className="glass-panel p-2 pb-5 rounded-[2rem] hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(255,255,255,0.1)] transition-all duration-500 overflow-hidden h-full flex flex-col will-change-transform bg-surface-800/40 backdrop-blur-xl border-white/10 hover:border-white/20">
@@ -43,7 +47,7 @@ export const ListingCard: React.FC<ListingCardProps> = ({ listing, index = 0 }) 
                 {listing.type}
               </span>
               {listing.isVerified && (
-                <span className="px-3 py-1 bg-brand-500/80 backdrop-blur-xl rounded-full text-xs font-semibold tracking-wide text-white flex items-center gap-1.5 border border-brand-400/20 shadow-[0_4px_12px_rgba(59,130,246,0.3)]">
+                <span className="px-3 py-1 bg-white backdrop-blur-xl rounded-full text-xs font-bold tracking-wide text-black flex items-center gap-1.5 border border-white/20 shadow-[0_4px_12px_rgba(255,255,255,0.3)]">
                   <BadgeCheck className="w-3.5 h-3.5" />
                   Verified
                 </span>
@@ -80,8 +84,30 @@ export const ListingCard: React.FC<ListingCardProps> = ({ listing, index = 0 }) 
                  </div>
               </div>
               <div className="flex gap-2">
-                 {listing.contactWhatsapp && <div className="w-9 h-9 rounded-full bg-[#25D366]/10 flex items-center justify-center border border-[#25D366]/20 transition-transform hover:scale-110 shadow-[0_0_15px_rgba(37,211,102,0.1)] hover:shadow-[0_0_20px_rgba(37,211,102,0.3)]"><MessageCircle className="w-4 h-4 text-[#25D366]"/></div>}
-                 {listing.contactPhone && <div className="w-9 h-9 rounded-full bg-brand-500/10 flex items-center justify-center border border-brand-500/20 transition-transform hover:scale-110 shadow-[0_0_15px_rgba(59,130,246,0.1)] hover:shadow-[0_0_20px_rgba(59,130,246,0.3)]"><Phone className="w-4 h-4 text-brand-400"/></div>}
+                 {listing.contactWhatsapp && (
+                   <button 
+                     onClick={(e) => {
+                       e.preventDefault();
+                       const loc = listing.university ? ` near ${listing.university}` : '';
+                       const text = encodeURIComponent(`Hi, I'm interested in your property '${listing.title}'${loc}. Is it still available?`);
+                       window.open(`https://wa.me/${listing.contactWhatsapp?.replace(/[^0-9+]/g, '')}?text=${text}`, '_blank');
+                     }}
+                     className="w-9 h-9 rounded-full bg-[#25D366]/10 flex items-center justify-center border border-[#25D366]/20 transition-transform hover:scale-110 shadow-[0_0_15px_rgba(37,211,102,0.1)] hover:shadow-[0_0_20px_rgba(37,211,102,0.3)] z-10"
+                   >
+                     <MessageCircle className="w-4 h-4 text-[#25D366]"/>
+                   </button>
+                 )}
+                 {listing.contactPhone && (
+                   <button 
+                     onClick={(e) => {
+                       e.preventDefault();
+                       window.open(`tel:${listing.contactPhone?.replace(/[^0-9+]/g, '')}`, '_self');
+                     }}
+                     className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center border border-white/20 transition-transform hover:scale-110 shadow-[0_0_15px_rgba(255,255,255,0.1)] hover:shadow-[0_0_20px_rgba(255,255,255,0.2)] z-10"
+                   >
+                     <Phone className="w-4 h-4 text-white"/>
+                   </button>
+                 )}
               </div>
             </div>
           </div>

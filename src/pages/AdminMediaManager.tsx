@@ -54,7 +54,7 @@ export const AdminMediaManager = () => {
             <h2 className="text-xl font-medium">Hero Section Gallery</h2>
             <p className="text-sm text-white/50">Images uploaded here will appear in the realtime background gallery of the homepage.</p>
           </div>
-          <label className="bg-brand-500 hover:bg-brand-600 text-white px-5 py-2.5 rounded-full text-sm font-medium transition-colors cursor-pointer flex items-center gap-2">
+          <label className="bg-white hover:bg-white/90 text-black shadow-[0_0_20px_rgba(255,255,255,0.1)] px-5 py-2.5 rounded-full text-sm font-medium transition-colors cursor-pointer flex items-center gap-2">
             <UploadCloud className="w-4 h-4" />
             {uploading ? 'Uploading...' : 'Upload Media'}
             <input type="file" multiple className="hidden" accept="image/*,video/*" onChange={handleUpload} disabled={uploading} />

@@ -135,7 +135,7 @@ export const LandlordDashboard = () => {
           <h1 className="text-4xl font-display font-medium mb-2">Landlord CMS</h1>
           <p className="text-white/50">Manage your real estate portfolio on UniHub.</p>
         </div>
-        <button onClick={() => setShowForm(!showForm)} className="bg-brand-500 hover:bg-brand-600 text-white px-6 py-3 rounded-full font-medium flex items-center gap-2 transition-colors shrink-0">
+        <button onClick={() => setShowForm(!showForm)} className="bg-white hover:bg-white/90 text-black px-6 py-3 rounded-full font-medium flex items-center gap-2 transition-colors shrink-0 shadow-[0_0_20px_rgba(255,255,255,0.1)]">
           <Plus className="w-5 h-5" />
           Add Property
         </button>
@@ -216,11 +216,11 @@ export const LandlordDashboard = () => {
 
             <div className="space-y-2 md:col-span-2">
               <label className="text-sm font-medium text-white/70">Property Images</label>
-              <div className="p-8 border-2 border-dashed border-white/10 rounded-xl bg-surface-800/50 text-center relative hover:border-brand-500/50 hover:bg-brand-500/5 transition-all">
+              <div className="p-8 border-2 border-dashed border-white/10 rounded-xl bg-surface-800/50 text-center relative hover:border-white/50 hover:bg-white/5 transition-all">
                  <input type="file" multiple accept="image/*" onChange={handleImageUpload} disabled={uploading} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed text-[0px]" title="" />
                  <div className="flex flex-col items-center justify-center pointer-events-none">
                     {uploading ? (
-                      <div className="w-10 h-10 border-2 border-brand-500 border-t-transparent rounded-full animate-spin mb-3"></div>
+                      <div className="w-10 h-10 border-2 border-white border-t-transparent rounded-full animate-spin mb-3"></div>
                     ) : (
                       <Plus className="w-10 h-10 text-white/20 mb-3" />
                     )}
@@ -301,7 +301,7 @@ export const LandlordDashboard = () => {
                    <button onClick={() => handleDelete(listing.id)} className="p-3 bg-rose-500/20 hover:bg-rose-500/40 rounded-full text-rose-400 backdrop-blur transition-transform hover:scale-110"><Trash2 className="w-5 h-5"/></button>
                 </div>
                 {listing.isVerified && (
-                  <div className="absolute top-3 left-3 px-2.5 py-1 bg-brand-500 backdrop-blur-md rounded-full text-[10px] font-bold uppercase tracking-wider text-white shadow-lg">
+                  <div className="absolute top-3 left-3 px-2.5 py-1 bg-white backdrop-blur-md rounded-full text-[10px] font-bold uppercase tracking-wider text-black shadow-lg shadow-white/10">
                     Verified
                   </div>
                 )}

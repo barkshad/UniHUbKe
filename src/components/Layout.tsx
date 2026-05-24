@@ -33,10 +33,11 @@ export const Layout = () => {
       >
         <div className="container mx-auto px-6 max-w-7xl flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2 group">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-brand-600 to-brand-400 flex items-center justify-center text-white font-bold group-hover:scale-105 transition-transform">
-              U
+            <div className="w-8 h-8 rounded-lg bg-surface-900 border border-white/20 shadow-[0_0_15px_rgba(255,255,255,0.2)] flex items-center justify-center text-white font-display font-medium overflow-hidden relative group-hover:scale-105 transition-transform">
+              <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
+              UH
             </div>
-            <span className="text-xl font-display font-medium tracking-tight text-white">UniHub</span>
+            <span className="text-xl font-display font-medium tracking-tight text-white group-hover:text-white/80 transition-colors">UniHub</span>
           </Link>
 
           {/* Desktop Nav */}
@@ -131,11 +132,11 @@ export const Layout = () => {
 
       <footer className="border-t border-white/5 py-12 mt-20">
         <div className="container mx-auto px-6 max-w-7xl flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded bg-gradient-to-tr from-brand-600 to-brand-400 flex items-center justify-center text-white text-xs font-bold">
-              U
+          <div className="flex items-center gap-2 group">
+            <div className="w-6 h-6 rounded-md bg-surface-900 border border-white/20 shadow-[0_0_10px_rgba(255,255,255,0.1)] flex items-center justify-center text-white font-display font-medium text-xs overflow-hidden relative">
+              UH
             </div>
-            <span className="text-sm font-display font-medium text-white/80">UniHub</span>
+            <span className="text-sm font-display font-medium text-white/80 group-hover:text-white transition-colors">UniHub</span>
           </div>
           <p className="text-white/40 text-sm">
             &copy; {new Date().getFullYear()} UniHub. All rights reserved.

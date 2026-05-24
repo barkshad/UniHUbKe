@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, Search, MapPin, ShieldCheck, Home as HomeIcon } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { collection, query, orderBy, getDocs, limit, doc, onSnapshot } from 'firebase/firestore';
+import { HeroSearch } from '../components/HeroSearch';
 import { db } from '../lib/firebase';
 import { Listing } from '../types';
 import { ListingCard } from '../components/ListingCard';
@@ -84,13 +85,13 @@ export const Home = () => {
         <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
           <motion.div 
             style={{ y, opacity }}
-            className="absolute top-1/4 left-1/4 w-[800px] h-[800px] bg-brand-600/10 rounded-full blur-[120px] mix-blend-screen -translate-x-1/2 -translate-y-1/2"
+            className="absolute top-1/4 left-1/4 w-[800px] h-[800px] bg-white/5 rounded-full blur-[120px] mix-blend-screen -translate-x-1/2 -translate-y-1/2"
           />
           <motion.div 
             style={{ y: useTransform(scrollYProgress, [0, 1], ["0%", "80%"]), opacity }}
-            className="absolute bottom-0 right-1/4 w-[600px] h-[600px] bg-purple-600/10 rounded-full blur-[100px] mix-blend-screen translate-x-1/2 translate-y-1/2"
+            className="absolute bottom-0 right-1/4 w-[600px] h-[600px] bg-white/5 rounded-full blur-[100px] mix-blend-screen translate-x-1/2 translate-y-1/2"
           />
-          <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.15] mix-blend-overlay"></div>
+          <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.10] mix-blend-overlay"></div>
         </div>
 
         <div className="container mx-auto px-6 max-w-7xl relative z-10">
@@ -111,7 +112,7 @@ export const Home = () => {
               transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
               className="text-5xl md:text-7xl lg:text-8xl font-display font-medium tracking-tight text-balance leading-[1.1] mb-8"
             >
-              Find trusted student <br className="hidden md:block"/> housing near <span className="gradient-text from-blue-400 to-brand-600">campus.</span>
+              Find trusted student <br className="hidden md:block"/> housing near <span className="gradient-text from-white to-white/50">campus.</span>
             </motion.h1>
 
             <motion.p
@@ -127,22 +128,9 @@ export const Home = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-              className="flex flex-col sm:flex-row items-center gap-4 w-full justify-center"
+              className="w-full max-w-2xl mt-4"
             >
-              <Link 
-                to="/listings"
-                className="w-full sm:w-auto px-8 py-4 bg-white text-black rounded-full font-medium flex items-center justify-center gap-2 hover:scale-105 transition-transform duration-300 hover:shadow-[0_0_30px_rgba(255,255,255,0.3)]"
-              >
-                <Search className="w-5 h-5" />
-                Find Rentals
-              </Link>
-              <Link 
-                to="/dashboard"
-                className="w-full sm:w-auto px-8 py-4 bg-white/5 backdrop-blur-md border border-white/10 text-white rounded-full font-medium flex items-center justify-center gap-2 hover:bg-white/10 transition-colors duration-300"
-              >
-                <HomeIcon className="w-5 h-5" />
-                List Property
-              </Link>
+              <HeroSearch />
             </motion.div>
           </div>
         </div>

@@ -57,9 +57,9 @@ export const AdminLayout = () => {
 const SidebarContent = ({ onClick }: { onClick?: () => void }) => (
   <>
     <div className="h-16 flex items-center px-6 border-b border-white/5 shrink-0 justify-between">
-      <div className="flex items-center gap-2">
-        <div className="w-6 h-6 rounded bg-brand-500 flex items-center justify-center text-xs font-bold text-white">U</div>
-        <span className="font-display font-medium text-sm tracking-wide">UniHub Admin</span>
+      <div className="flex items-center gap-2 group">
+        <div className="w-6 h-6 rounded-md bg-surface-900 border border-white/20 shadow-[0_0_10px_rgba(255,255,255,0.1)] flex items-center justify-center text-white font-display font-medium text-xs overflow-hidden relative">UH</div>
+        <span className="font-display font-medium text-sm tracking-wide group-hover:text-white transition-colors">UniHub Admin</span>
       </div>
       {onClick && <button onClick={onClick} className="p-1 lg:hidden text-white/50 hover:text-white"><X className="w-5 h-5" /></button>}
     </div>

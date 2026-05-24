@@ -27,7 +27,7 @@ export const AdminLogin = () => {
   return (
     <div className="min-h-screen bg-surface-900 flex items-center justify-center p-6 relative overflow-hidden">
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-brand-600/10 rounded-full blur-[120px]"></div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-white/5 rounded-full blur-[120px]"></div>
         <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-10 mix-blend-overlay"></div>
       </div>
 
@@ -37,8 +37,9 @@ export const AdminLogin = () => {
         className="w-full max-w-md relative z-10"
       >
         <div className="glass-panel p-10 rounded-[2rem] border border-white/10 shadow-2xl relative overflow-hidden">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-brand-600 to-brand-400 mb-8 flex items-center justify-center shadow-lg shadow-brand-500/20">
-            <Lock className="w-8 h-8 text-white" />
+          <div className="w-16 h-16 rounded-2xl bg-surface-900 border border-white/20 shadow-[0_0_30px_rgba(255,255,255,0.1)] mb-8 flex items-center justify-center relative overflow-hidden group">
+             <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/10 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
+            <Lock className="w-8 h-8 text-white relative z-10" />
           </div>
           
           <h1 className="text-3xl font-display font-medium text-white mb-2 tracking-tight">Admin Portal</h1>

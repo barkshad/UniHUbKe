@@ -106,7 +106,7 @@ export const ListingDetails = () => {
              <div className="flex flex-wrap items-center gap-3 mb-6">
                <span className="px-4 py-1.5 rounded-full bg-surface-800 border border-white/10 text-sm font-medium capitalize text-white/80">{listing.type}</span>
                {listing.isVerified && (
-                 <span className="px-4 py-1.5 rounded-full bg-brand-500/10 border border-brand-500/20 text-brand-400 text-sm font-medium flex items-center gap-2">
+                 <span className="px-4 py-1.5 rounded-full bg-white text-black text-sm font-bold flex items-center gap-2 shadow-[0_0_15px_rgba(255,255,255,0.2)]">
                    <BadgeCheck className="w-4 h-4" />
                    Verified Listing
                  </span>
@@ -204,13 +204,18 @@ export const ListingDetails = () => {
                <p className="text-sm text-white/50 mb-2">Reach out directly to schedule a viewing or ask questions. No account required.</p>
                
                {listing.contactWhatsapp && (
-                 <a href={`https://wa.me/${listing.contactWhatsapp.replace(/[^0-9]/g, '')}`} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-3 w-full py-4 bg-[#25D366]/10 hover:bg-[#25D366]/20 border border-[#25D366]/30 text-[#25D366] rounded-xl font-medium transition-colors">
+                 <a 
+                   href={`https://wa.me/${listing.contactWhatsapp.replace(/[^0-9+]/g, '')}?text=${encodeURIComponent(`Hi, I'm interested in your property '${listing.title}'${listing.university ? ` near ${listing.university}` : ''}. Is it still available?`)}`}
+                   target="_blank" 
+                   rel="noopener noreferrer" 
+                   className="flex items-center justify-center gap-3 w-full py-4 bg-[#25D366]/10 hover:bg-[#25D366]/20 border border-[#25D366]/30 text-[#25D366] rounded-xl font-medium transition-colors"
+                 >
                    <MessageCircle className="w-5 h-5" />
                    WhatsApp
                  </a>
                )}
                {listing.contactPhone && (
-                 <a href={`tel:${listing.contactPhone}`} className="flex items-center justify-center gap-3 w-full py-4 bg-brand-500 text-white rounded-xl font-medium shadow-lg shadow-brand-500/20 hover:bg-brand-600 transition-colors">
+                 <a href={`tel:${listing.contactPhone}`} className="flex items-center justify-center gap-3 w-full py-4 bg-white text-black rounded-xl font-medium shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:bg-white/90 transition-colors">
                    <Phone className="w-5 h-5" />
                    Call {listing.contactPhone}
                  </a>

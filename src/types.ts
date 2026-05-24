@@ -1,3 +1,12 @@
+export interface University {
+  id: string;
+  name: string;
+  town?: string;
+  nearbyAreas?: string[];
+  coordinates?: { lat: number; lng: number };
+  popularKeywords?: string[];
+}
+
 export type UserRole = 'student' | 'landlord' | 'admin';
 
 export interface User {
