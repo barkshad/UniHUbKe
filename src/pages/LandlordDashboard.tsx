@@ -142,7 +142,7 @@ export const LandlordDashboard = () => {
       </div>
 
       {showForm && (
-        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="glass-panel p-8 rounded-[2rem] mb-12 border border-brand-500/20 shadow-[0_20px_40px_-15px_rgba(59,130,246,0.1)]">
+        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="glass-panel p-8 rounded-[2rem] mb-12 border border-white/20 shadow-[0_20px_40px_-15px_rgba(255,255,255,0.1)]">
           <h2 className="text-2xl font-display mb-6 text-brand-400">New Listing Details</h2>
           {error && <div className="bg-rose-500/10 border border-rose-500/30 text-rose-400 p-4 rounded-xl mb-6 flex items-center gap-3"><AlertCircle className="w-5 h-5"/> {error}</div>}
           <form onSubmit={handleSubmit} className="grid md:grid-cols-2 gap-x-6 gap-y-5">

@@ -48,7 +48,7 @@ export const ListingCard: React.FC<ListingCardProps> = ({ listing, index = 0, on
       onMouseLeave={onMouseLeave}
     >
       <Link to={`/listings/${listing.id}`} className="block h-full outline-none">
-        <div className="glass-panel p-2 pb-5 rounded-[2rem] hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(255,255,255,0.1)] transition-all duration-500 overflow-hidden h-full flex flex-col will-change-transform bg-surface-800/40 backdrop-blur-xl border-white/10 hover:border-white/20 relative">
+        <div className="glass-panel p-2 pb-5 rounded-[2rem] hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(255,255,255,0.15)] transition-all duration-500 overflow-hidden h-full flex flex-col will-change-transform bg-surface-800/40 backdrop-blur-xl border-white/10 hover:border-white/20 relative group-hover:rotate-x-2 group-hover:-rotate-y-2 transform perspective-[1500px]">
           
           <div className="relative h-64 rounded-[1.5rem] overflow-hidden mb-5 bg-surface-900 border border-white/5">
             {hasVideo ? (
@@ -109,7 +109,7 @@ export const ListingCard: React.FC<ListingCardProps> = ({ listing, index = 0, on
             
             <div className="flex flex-col gap-1.5 text-white/50 text-sm mb-6">
               <div className="flex items-center gap-2">
-                <MapPin className="w-4 h-4 shrink-0 text-white/40" />
+                <MapPin className="w-4 h-4 shrink-0 text-white group-hover:scale-110 transition-transform duration-300 group-hover:-rotate-12" />
                 <span className="line-clamp-1">{listing.location}</span>
               </div>
               {listing.distanceFromCampus && (

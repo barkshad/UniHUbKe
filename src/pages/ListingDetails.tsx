@@ -39,7 +39,7 @@ export const ListingDetails = () => {
   if (loading) {
     return (
       <div className="container mx-auto px-6 max-w-5xl py-12 flex justify-center">
-        <div className="w-8 h-8 border-4 border-brand-500 border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-8 h-8 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -155,19 +155,19 @@ export const ListingDetails = () => {
                  <>
                    {listing.hasWifi && (
                      <div className="flex items-center gap-3 text-white/80">
-                       <CheckCircle2 className="w-5 h-5 text-brand-500" />
+                       <CheckCircle2 className="w-5 h-5 text-white" />
                        <span>Free WiFi</span>
                      </div>
                    )}
                    {listing.hasWater && (
                      <div className="flex items-center gap-3 text-white/80">
-                       <CheckCircle2 className="w-5 h-5 text-brand-500" />
+                       <CheckCircle2 className="w-5 h-5 text-white" />
                        <span>Water Supply</span>
                      </div>
                    )}
                    {listing.genderRestriction !== 'none' && (
                      <div className="flex items-center gap-3 text-white/80">
-                       <CheckCircle2 className="w-5 h-5 text-brand-500" />
+                       <CheckCircle2 className="w-5 h-5 text-white" />
                        <span className="capitalize">{listing.genderRestriction.replace('_', ' ')}</span>
                      </div>
                    )}
@@ -204,7 +204,7 @@ export const ListingDetails = () => {
                )}
             </div>
 
-            <div className="flex flex-col gap-4">
+             <div className="flex flex-col gap-4">
                <h3 className="text-lg font-medium">Contact Landlord</h3>
                <p className="text-sm text-white/50 mb-2">Reach out directly to schedule a viewing or ask questions. No account required.</p>
                
@@ -213,20 +213,20 @@ export const ListingDetails = () => {
                    href={`https://wa.me/${listing.contactWhatsapp.replace(/[^0-9+]/g, '')}?text=${encodeURIComponent(`Hi, I'm interested in your property '${listing.title}'${listing.university ? ` near ${listing.university}` : ''}. Is it still available?`)}`}
                    target="_blank" 
                    rel="noopener noreferrer" 
-                   className="flex items-center justify-center gap-3 w-full py-4 bg-[#25D366]/10 hover:bg-[#25D366]/20 border border-[#25D366]/30 text-[#25D366] rounded-xl font-medium transition-colors"
+                   className="flex items-center justify-center gap-3 w-full py-4 bg-[#25D366]/10 hover:bg-[#25D366]/20 border border-[#25D366]/30 text-[#25D366] rounded-xl font-medium transition-all hover:-translate-y-1 hover:shadow-[0_10px_20px_-10px_rgba(37,211,102,0.3)] active:scale-95"
                  >
                    <MessageCircle className="w-5 h-5" />
                    WhatsApp
                  </a>
                )}
                {listing.contactPhone && (
-                 <a href={`tel:${listing.contactPhone}`} className="flex items-center justify-center gap-3 w-full py-4 bg-white text-black rounded-xl font-medium shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:bg-white/90 transition-colors">
+                 <a href={`tel:${listing.contactPhone}`} className="flex items-center justify-center gap-3 w-full py-4 bg-white text-black rounded-xl font-medium shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:bg-white/90 transition-all hover:-translate-y-1 hover:shadow-[0_10px_30px_-10px_rgba(255,255,255,0.4)] active:scale-95">
                    <Phone className="w-5 h-5" />
                    Call {listing.contactPhone}
                  </a>
                )}
                {listing.contactEmail && (
-                 <a href={`mailto:${listing.contactEmail}`} className="flex items-center justify-center gap-3 w-full py-4 bg-surface-800 hover:bg-surface-700 border border-white/10 text-white rounded-xl font-medium transition-colors">
+                 <a href={`mailto:${listing.contactEmail}`} className="flex items-center justify-center gap-3 w-full py-4 bg-surface-800 hover:bg-surface-700 border border-white/10 text-white rounded-xl font-medium transition-all hover:-translate-y-1 hover:shadow-[0_10px_20px_-10px_rgba(255,255,255,0.1)] active:scale-95">
                    <Mail className="w-5 h-5" />
                    Email Landlord
                  </a>

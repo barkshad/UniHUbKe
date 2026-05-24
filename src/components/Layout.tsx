@@ -10,6 +10,8 @@ export const Layout = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { user, signIn, logout } = useAuth();
   const location = useLocation();
+  const [cursorPos, setCursorPos] = useState({ x: -100, y: -100 });
+  const [isHovering, setIsHovering] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -23,8 +25,36 @@ export const Layout = () => {
     setMobileMenuOpen(false);
   }, [location.pathname]);
 
+  useEffect(() => {
+    const updateCursor = (e: MouseEvent) => {
+      setCursorPos({ x: e.clientX, y: e.clientY });
+      
+      const target = e.target as HTMLElement;
+      const isClickable = window.getComputedStyle(target).cursor === 'pointer' || 
+                          target.tagName.toLowerCase() === 'button' || 
+                          target.tagName.toLowerCase() === 'a' || 
+                          target.closest('button') || 
+                          target.closest('a');
+      
+      setIsHovering(!!isClickable);
+    };
+
+    window.addEventListener('mousemove', updateCursor);
+    return () => window.removeEventListener('mousemove', updateCursor);
+  }, []);
+
   return (
-    <div className="min-h-screen flex flex-col bg-surface-900 selection:bg-brand-500/30 selection:text-brand-50">
+    <div className={cn("min-h-screen flex flex-col bg-surface-900 selection:bg-white/30 selection:text-white", isHovering ? "cursor-hover" : "")}>
+      {/* Custom Cursor */}
+      <div 
+        className="cursor-dot hidden md:block"
+        style={{ left: `${cursorPos.x}px`, top: `${cursorPos.y}px` }}
+      />
+      <div 
+        className="cursor-ring hidden md:block"
+        style={{ left: `${cursorPos.x}px`, top: `${cursorPos.y}px` }}
+      />
+
       <header
         className={cn(
           "fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b border-transparent",
@@ -64,7 +94,7 @@ export const Layout = () => {
                 <button onClick={signIn} className="text-sm font-medium text-white/70 hover:text-white transition-colors">
                   Landlord Login
                 </button>
-                <button onClick={signIn} className="text-sm font-medium bg-white text-black px-4 py-2 rounded-full hover:bg-white/90 transition-colors flex items-center gap-2">
+                <button onClick={signIn} className="text-sm font-medium bg-white text-black px-4 py-2 rounded-full hover:bg-white/90 hover:scale-105 active:scale-95 transition-all flex items-center gap-2 hover:shadow-[0_0_20px_rgba(255,255,255,0.2)]">
                   List Property
                   <ArrowRight className="w-4 h-4" />
                 </button>

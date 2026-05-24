@@ -28,7 +28,7 @@ const createCustomIcon = (price: number, isHovered: boolean) => {
 const MapController = ({ center }: { center: {lat: number, lng: number} | null }) => {
   const map = useMap();
   useEffect(() => {
-    if (center) {
+    if (center && typeof center.lat === 'number' && !isNaN(center.lat) && typeof center.lng === 'number' && !isNaN(center.lng)) {
       map.flyTo([center.lat, center.lng], 14, { duration: 1.5 });
     }
   }, [center, map]);
@@ -39,7 +39,7 @@ export const ListingsMap = ({ listings, hoveredId }: { listings: Listing[], hove
   const navigate = useNavigate();
   // Default center somewhere in Africa or dynamically computed (let's use Nairobi for fallback or just the first listing's coord)
   const defaultCenter = { lat: -1.2921, lng: 36.8219 };
-  const validListings = listings.filter(l => l.coordinates && l.coordinates.lat);
+  const validListings = listings.filter(l => l.coordinates && typeof l.coordinates.lat === 'number' && !isNaN(l.coordinates.lat) && typeof l.coordinates.lng === 'number' && !isNaN(l.coordinates.lng));
   
   const [center, setCenter] = useState<{lat: number, lng: number} | null>(
     validListings.length > 0 ? validListings[0].coordinates! : defaultCenter
@@ -57,7 +57,7 @@ export const ListingsMap = ({ listings, hoveredId }: { listings: Listing[], hove
   return (
     <div className="w-full h-full rounded-2xl overflow-hidden glass-panel border border-white/5 relative z-0">
       <MapContainer 
-        center={center ? [center.lat, center.lng] : [defaultCenter.lat, defaultCenter.lng]} 
+        center={center && !isNaN(center.lat) && !isNaN(center.lng) ? [center.lat, center.lng] : [defaultCenter.lat, defaultCenter.lng]} 
         zoom={13} 
         style={{ width: '100%', height: '100%', background: '#0a0a0a' }}
         zoomControl={false}

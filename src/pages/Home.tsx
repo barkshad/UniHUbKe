@@ -102,7 +102,7 @@ export const Home = () => {
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
               className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 mb-8 backdrop-blur-md"
             >
-              <span className="w-2 h-2 rounded-full bg-brand-500 animate-pulse"></span>
+              <span className="w-2 h-2 rounded-full bg-white animate-pulse"></span>
               <span className="text-sm font-medium text-white/80">Premium Student Housing</span>
             </motion.div>
 
@@ -181,15 +181,15 @@ export const Home = () => {
               ))}
             </div>
           ) : (
-            <div className="relative z-10 glass-panel rounded-2xl p-4 flex gap-4 w-full overflow-hidden transform perspective-1000 rotate-x-12 scale-95 items-end justify-center opacity-40">
-               <div className="w-1/3 bg-surface-800 rounded-xl overflow-hidden shadow-2xl border border-white/5">
-                  <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?fit=crop&w=800&q=80" alt="Apartment" className="w-full h-48 object-cover" />
+            <div className="relative z-10 glass-panel rounded-2xl p-4 flex gap-4 w-full overflow-hidden transform perspective-1000 rotate-x-12 scale-95 items-end justify-center opacity-40 hover:opacity-80 transition-opacity duration-700">
+               <div className="w-1/3 bg-surface-800 rounded-xl overflow-hidden shadow-2xl border border-white/5 hover:border-white/20 transition-colors duration-500">
+                  <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?fit=crop&w=800&q=80&grayscale=1" alt="Apartment" className="w-full h-48 object-cover grayscale hover:grayscale-0 transition-all duration-700 hover:scale-105" />
                </div>
-               <div className="w-1/3 bg-surface-800 rounded-xl overflow-hidden shadow-2xl border border-white/10 transform -translate-y-8">
-                  <img src="https://images.unsplash.com/photo-1502672260266-1c1e52416451?fit=crop&w=800&q=80" alt="Room" className="w-full h-56 object-cover" />
+               <div className="w-1/3 bg-surface-800 rounded-xl overflow-hidden shadow-2xl border border-white/10 transform -translate-y-8 hover:border-white/30 transition-colors duration-500">
+                  <img src="https://images.unsplash.com/photo-1502672260266-1c1e52416451?fit=crop&w=800&q=80&grayscale=1" alt="Room" className="w-full h-56 object-cover grayscale hover:grayscale-0 transition-all duration-700 hover:scale-105" />
                </div>
-               <div className="w-1/3 bg-surface-800 rounded-xl overflow-hidden shadow-2xl border border-white/5">
-                  <img src="https://images.unsplash.com/photo-1554995207-c18c203602cb?fit=crop&w=800&q=80" alt="Kitchen" className="w-full h-48 object-cover" />
+               <div className="w-1/3 bg-surface-800 rounded-xl overflow-hidden shadow-2xl border border-white/5 hover:border-white/20 transition-colors duration-500">
+                  <img src="https://images.unsplash.com/photo-1554995207-c18c203602cb?fit=crop&w=800&q=80&grayscale=1" alt="Kitchen" className="w-full h-48 object-cover grayscale hover:grayscale-0 transition-all duration-700 hover:scale-105" />
                </div>
             </div>
           )}
@@ -199,26 +199,35 @@ export const Home = () => {
       {/* Features Section */}
       <section className="py-32 bg-surface-900 relative z-10">
         <div className="container mx-auto px-6 max-w-7xl">
-          <div className="text-center max-w-3xl mx-auto mb-20">
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            className="text-center max-w-3xl mx-auto mb-20"
+          >
             <h2 className="text-3xl md:text-5xl font-display font-medium mb-6">Designed for Students.</h2>
             <p className="text-white/50 text-lg">We stripped away the noise to give you exactly what you need to find your next home.</p>
-          </div>
+          </motion.div>
 
           <div className="grid md:grid-cols-3 gap-6">
             <FeatureCard 
-              icon={<ShieldCheck className="w-6 h-6 text-brand-400" />}
+              icon={<ShieldCheck className="w-6 h-6 text-white" />}
               title="Verified Landlords"
               description="Every listing and landlord is vetted to eliminate scams and ensure you have a safe renting experience."
+              delay={0.1}
             />
             <FeatureCard 
-              icon={<MapPin className="w-6 h-6 text-brand-400" />}
+              icon={<MapPin className="w-6 h-6 text-white" />}
               title="Near Campus"
               description="Focusing strictly on housing options within walking distance or a short commute to major university campuses."
+              delay={0.2}
             />
             <FeatureCard 
-              icon={<Search className="w-6 h-6 text-brand-400" />}
+              icon={<Search className="w-6 h-6 text-white" />}
               title="Zero Friction"
               description="Browse, filter, and contact landlords directly via WhatsApp or email. No account required to find a home."
+              delay={0.3}
             />
           </div>
         </div>
@@ -227,14 +236,20 @@ export const Home = () => {
   );
 };
 
-const FeatureCard = ({ icon, title, description }: { icon: React.ReactNode, title: string, description: string }) => {
+const FeatureCard = ({ icon, title, description, delay = 0 }: { icon: React.ReactNode, title: string, description: string, delay?: number }) => {
   return (
-    <div className="glass-panel p-8 rounded-3xl flex flex-col gap-4 hover:-translate-y-2 transition-transform duration-500">
-      <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mb-4">
+    <motion.div 
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ duration: 0.8, delay, ease: [0.16, 1, 0.3, 1] }}
+      className="glass-panel p-8 rounded-3xl flex flex-col gap-4 group hover:-translate-y-2 hover:shadow-[0_20px_40px_-20px_rgba(255,255,255,0.1)] hover:border-white/20 transition-all duration-500 will-change-transform"
+    >
+      <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 group-hover:border-white/30 group-hover:bg-white/10 flex items-center justify-center mb-4 transition-all duration-500">
         {icon}
       </div>
-      <h3 className="text-xl font-medium font-display">{title}</h3>
-      <p className="text-white/50 leading-relaxed">{description}</p>
-    </div>
+      <h3 className="text-xl font-medium font-display group-hover:text-white transition-colors">{title}</h3>
+      <p className="text-white/50 leading-relaxed group-hover:text-white/70 transition-colors">{description}</p>
+    </motion.div>
   );
 };

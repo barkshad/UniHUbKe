@@ -127,7 +127,7 @@ export const HeroSearch = () => {
         <div className="absolute inset-y-2 right-2 flex items-center">
           <button 
             type="submit"
-            className="px-6 py-3 bg-white text-black rounded-full font-medium hover:scale-105 transition-transform flex items-center gap-2"
+            className="px-6 py-3 bg-white text-black rounded-full font-medium flex items-center gap-2 transition-all hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_30px_rgba(255,255,255,0.2)]"
           >
             Search
           </button>
