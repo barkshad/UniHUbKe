@@ -1,0 +1,224 @@
+import React, { useRef, useState, useEffect } from 'react';
+import { motion, useScroll, useTransform, AnimatePresence } from 'motion/react';
+import { Link } from 'react-router-dom';
+import { ArrowRight, Search, MapPin, ShieldCheck, Home as HomeIcon } from 'lucide-react';
+import { cn } from '../lib/utils';
+import { collection, query, orderBy, getDocs, limit, doc, onSnapshot } from 'firebase/firestore';
+import { db } from '../lib/firebase';
+import { Listing } from '../types';
+import { ListingCard } from '../components/ListingCard';
+
+export const Home = () => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [featuredListings, setFeaturedListings] = useState<Listing[]>([]);
+  const [heroMedia, setHeroMedia] = useState<string[]>([]);
+  const [currentMediaIndex, setCurrentMediaIndex] = useState(0);
+
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end start"]
+  });
+
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
+  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
+
+  useEffect(() => {
+    const fetchListings = async () => {
+      try {
+        const q = query(collection(db, 'listings'), orderBy('createdAt', 'desc'), limit(3));
+        const snap = await getDocs(q);
+        setFeaturedListings(snap.docs.map(d => ({ id: d.id, ...d.data() } as Listing)));
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchListings();
+
+    const unsub = onSnapshot(doc(db, 'cms', 'hero'), (docSnap) => {
+      if (docSnap.exists() && docSnap.data().media?.length > 0) {
+        setHeroMedia(docSnap.data().media);
+      }
+    });
+
+    return () => unsub();
+  }, []);
+
+  useEffect(() => {
+    if (heroMedia.length <= 1) return;
+    const interval = setInterval(() => {
+      setCurrentMediaIndex(prev => (prev + 1) % heroMedia.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [heroMedia]);
+
+  return (
+    <div className="flex flex-col w-full overflow-hidden" ref={containerRef}>
+      {/* Hero Section */}
+      <section className="relative min-h-[95vh] flex items-center justify-center pt-24 pb-40 lg:pb-56">
+        
+        {/* Dynamic CMS Background Media */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+           <AnimatePresence>
+             {heroMedia.length > 0 && heroMedia[currentMediaIndex] && (
+               <motion.div
+                 key={currentMediaIndex}
+                 initial={{ opacity: 0, scale: 1.05 }}
+                 animate={{ opacity: 0.15, scale: 1 }}
+                 exit={{ opacity: 0 }}
+                 transition={{ duration: 2 }}
+                 className="absolute inset-0 w-full h-full"
+               >
+                 {heroMedia[currentMediaIndex].match(/\.(mp4|webm|ogg)$/i) ? (
+                    <video src={heroMedia[currentMediaIndex]} className="w-full h-full object-cover" autoPlay muted loop playsInline />
+                 ) : (
+                    <img src={heroMedia[currentMediaIndex]} className="w-full h-full object-cover grayscale" alt="" />
+                 )}
+               </motion.div>
+             )}
+           </AnimatePresence>
+           
+           <div className="absolute inset-0 bg-gradient-to-b from-surface-900 via-surface-900/80 to-surface-900"></div>
+        </div>
+
+        {/* Abstract Background Elements */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+          <motion.div 
+            style={{ y, opacity }}
+            className="absolute top-1/4 left-1/4 w-[800px] h-[800px] bg-brand-600/10 rounded-full blur-[120px] mix-blend-screen -translate-x-1/2 -translate-y-1/2"
+          />
+          <motion.div 
+            style={{ y: useTransform(scrollYProgress, [0, 1], ["0%", "80%"]), opacity }}
+            className="absolute bottom-0 right-1/4 w-[600px] h-[600px] bg-purple-600/10 rounded-full blur-[100px] mix-blend-screen translate-x-1/2 translate-y-1/2"
+          />
+          <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.15] mix-blend-overlay"></div>
+        </div>
+
+        <div className="container mx-auto px-6 max-w-7xl relative z-10">
+          <div className="flex flex-col items-center text-center max-w-4xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 mb-8 backdrop-blur-md"
+            >
+              <span className="w-2 h-2 rounded-full bg-brand-500 animate-pulse"></span>
+              <span className="text-sm font-medium text-white/80">Premium Student Housing</span>
+            </motion.div>
+
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+              className="text-5xl md:text-7xl lg:text-8xl font-display font-medium tracking-tight text-balance leading-[1.1] mb-8"
+            >
+              Find trusted student <br className="hidden md:block"/> housing near <span className="gradient-text from-blue-400 to-brand-600">campus.</span>
+            </motion.h1>
+
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+              className="text-lg md:text-xl text-white/50 max-w-2xl mb-12 text-balance leading-relaxed"
+            >
+              Verified rentals, direct landlord contacts, and student-friendly housing — all in one beautifully designed place. No account required to browse.
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+              className="flex flex-col sm:flex-row items-center gap-4 w-full justify-center"
+            >
+              <Link 
+                to="/listings"
+                className="w-full sm:w-auto px-8 py-4 bg-white text-black rounded-full font-medium flex items-center justify-center gap-2 hover:scale-105 transition-transform duration-300 hover:shadow-[0_0_30px_rgba(255,255,255,0.3)]"
+              >
+                <Search className="w-5 h-5" />
+                Find Rentals
+              </Link>
+              <Link 
+                to="/dashboard"
+                className="w-full sm:w-auto px-8 py-4 bg-white/5 backdrop-blur-md border border-white/10 text-white rounded-full font-medium flex items-center justify-center gap-2 hover:bg-white/10 transition-colors duration-300"
+              >
+                <HomeIcon className="w-5 h-5" />
+                List Property
+              </Link>
+            </motion.div>
+          </div>
+        </div>
+
+        {/* Floating UI Elements Demo */}
+        <motion.div
+           initial={{ opacity: 0, y: 40 }}
+           animate={{ opacity: 1, y: 0 }}
+           transition={{ duration: 1, delay: 0.6, ease: [0.16, 1, 0.3, 1] }} 
+           className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/4 w-full max-w-7xl px-6 pointer-events-none hidden lg:block z-10"
+        >
+          <div className="w-full h-80 bg-gradient-to-t from-surface-900 via-surface-900/80 to-transparent absolute bottom-0 left-0 z-20 pointer-events-none"></div>
+          
+          {featuredListings.length > 0 ? (
+            <div className="relative z-10 flex gap-6 w-full justify-center overflow-visible transform perspective-1000 rotate-x-6 scale-[0.85] transform-origin-bottom">
+              {featuredListings.slice(0, 3).map((listing, i) => (
+                <div key={listing.id} className={cn("w-[350px] shrink-0 pointer-events-auto transition-transform duration-700 hover:-translate-y-8 hover:rotate-x-0 hover:scale-110", i === 1 && "-translate-y-12")}>
+                  <ListingCard listing={listing} index={i} />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="relative z-10 glass-panel rounded-2xl p-4 flex gap-4 w-full overflow-hidden transform perspective-1000 rotate-x-12 scale-95 items-end justify-center opacity-40">
+               <div className="w-1/3 bg-surface-800 rounded-xl overflow-hidden shadow-2xl border border-white/5">
+                  <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?fit=crop&w=800&q=80" alt="Apartment" className="w-full h-48 object-cover" />
+               </div>
+               <div className="w-1/3 bg-surface-800 rounded-xl overflow-hidden shadow-2xl border border-white/10 transform -translate-y-8">
+                  <img src="https://images.unsplash.com/photo-1502672260266-1c1e52416451?fit=crop&w=800&q=80" alt="Room" className="w-full h-56 object-cover" />
+               </div>
+               <div className="w-1/3 bg-surface-800 rounded-xl overflow-hidden shadow-2xl border border-white/5">
+                  <img src="https://images.unsplash.com/photo-1554995207-c18c203602cb?fit=crop&w=800&q=80" alt="Kitchen" className="w-full h-48 object-cover" />
+               </div>
+            </div>
+          )}
+        </motion.div>
+      </section>
+
+      {/* Features Section */}
+      <section className="py-32 bg-surface-900 relative z-10">
+        <div className="container mx-auto px-6 max-w-7xl">
+          <div className="text-center max-w-3xl mx-auto mb-20">
+            <h2 className="text-3xl md:text-5xl font-display font-medium mb-6">Designed for Students.</h2>
+            <p className="text-white/50 text-lg">We stripped away the noise to give you exactly what you need to find your next home.</p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            <FeatureCard 
+              icon={<ShieldCheck className="w-6 h-6 text-brand-400" />}
+              title="Verified Landlords"
+              description="Every listing and landlord is vetted to eliminate scams and ensure you have a safe renting experience."
+            />
+            <FeatureCard 
+              icon={<MapPin className="w-6 h-6 text-brand-400" />}
+              title="Near Campus"
+              description="Focusing strictly on housing options within walking distance or a short commute to major university campuses."
+            />
+            <FeatureCard 
+              icon={<Search className="w-6 h-6 text-brand-400" />}
+              title="Zero Friction"
+              description="Browse, filter, and contact landlords directly via WhatsApp or email. No account required to find a home."
+            />
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+};
+
+const FeatureCard = ({ icon, title, description }: { icon: React.ReactNode, title: string, description: string }) => {
+  return (
+    <div className="glass-panel p-8 rounded-3xl flex flex-col gap-4 hover:-translate-y-2 transition-transform duration-500">
+      <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mb-4">
+        {icon}
+      </div>
+      <h3 className="text-xl font-medium font-display">{title}</h3>
+      <p className="text-white/50 leading-relaxed">{description}</p>
+    </div>
+  );
+};

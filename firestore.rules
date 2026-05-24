@@ -1,0 +1,63 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if false;
+    }
+    
+    function isValidId(id) { return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); }
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+    function isSignedIn() { return request.auth != null; }
+    function isAdmin() { return isSignedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid)); }
+    function isOwner(userId) { return isSignedIn() && request.auth.uid == userId; }
+    
+    function isValidUser(data) {
+      return data.keys().hasAll(['email', 'role', 'createdAt']) &&
+        data.email is string && data.email.size() <= 200 &&
+        data.role is string && data.role in ['student', 'landlord', 'admin'] &&
+        data.createdAt is number &&
+        (!('name' in data) || (data.name is string && data.name.size() <= 100)) &&
+        (!('favorites' in data) || data.favorites is list) &&
+        (!('updatedAt' in data) || data.updatedAt is number);
+    }
+    
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow create: if isOwner(userId) && isValidId(userId) && isValidUser(incoming()) && incoming().role in ['student', 'landlord'];
+      allow update: if isOwner(userId) && isValidUser(incoming()) && incoming().createdAt == existing().createdAt && incoming().email == existing().email && incoming().diff(existing()).affectedKeys().hasOnly(['name', 'favorites', 'updatedAt']);
+      allow delete: if isAdmin();
+    }
+    
+    function isValidListing(data) {
+      return data.keys().hasAll(['title', 'description', 'price', 'type', 'location', 'images', 'landlordId', 'createdAt', 'status']) &&
+        data.title is string && data.title.size() <= 150 &&
+        data.description is string && data.description.size() <= 5000 &&
+        data.price is number &&
+        data.type is string && data.type in ['hostel', 'apartment', 'bedsitter'] &&
+        data.location is string && data.location.size() <= 200 &&
+        data.images is list && data.images.size() <= 30 && (data.images.size() == 0 || data.images[0] is string) &&
+        data.landlordId is string && data.landlordId == request.auth.uid &&
+        data.createdAt is number &&
+        data.status is string && data.status in ['available', 'rented'] &&
+        (!('contactEmail' in data) || (data.contactEmail is string && data.contactEmail.size() <= 100)) &&
+        (!('contactPhone' in data) || (data.contactPhone is string && data.contactPhone.size() <= 50)) &&
+        (!('contactWhatsapp' in data) || (data.contactWhatsapp is string && data.contactWhatsapp.size() <= 50)) &&
+        (!('amenities' in data) || (data.amenities is list && data.amenities.size() <= 50)) &&
+        (!('isVerified' in data) || data.isVerified is bool) &&
+        (!('updatedAt' in data) || data.updatedAt is number) &&
+        (!('coordinates' in data) || (data.coordinates is map && data.coordinates.lat is number && data.coordinates.lng is number));
+    }
+    
+    match /listings/{listingId} {
+      allow read: if true;
+      allow create: if isSignedIn() && isValidId(listingId) && isValidListing(incoming()) && (!('isVerified' in incoming()) || incoming().isVerified == false);
+      allow update: if (isSignedIn() && existing().landlordId == request.auth.uid && isValidListing(incoming()) && incoming().landlordId == existing().landlordId && incoming().createdAt == existing().createdAt && incoming().diff(existing()).affectedKeys().hasOnly(['title', 'description', 'price', 'type', 'location', 'images', 'contactEmail', 'contactPhone', 'contactWhatsapp', 'amenities', 'status', 'updatedAt', 'coordinates'])) || isAdmin();
+      allow delete: if (isSignedIn() && existing().landlordId == request.auth.uid) || isAdmin();
+    }
+    
+    match /admins/{adminId} {
+      allow read: if false; 
+    }
+  }
+}
