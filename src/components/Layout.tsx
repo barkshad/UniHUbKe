@@ -46,8 +46,8 @@ export const Layout = () => {
             </Link>
             {user ? (
               <div className="flex items-center gap-4">
-                {user.role === 'landlord' && (
-                  <Link to="/dashboard" className="text-sm font-medium text-white/70 hover:text-white transition-colors">
+                {(user.role === 'landlord' || user.role === 'admin') && (
+                  <Link to={user.role === 'admin' ? "/admin" : "/dashboard"} className="text-sm font-medium text-white/70 hover:text-white transition-colors">
                     Dashboard
                   </Link>
                 )}
@@ -61,7 +61,7 @@ export const Layout = () => {
             ) : (
               <div className="flex items-center gap-4">
                 <button onClick={signIn} className="text-sm font-medium text-white/70 hover:text-white transition-colors">
-                  Log in
+                  Landlord Login
                 </button>
                 <button onClick={signIn} className="text-sm font-medium bg-white text-black px-4 py-2 rounded-full hover:bg-white/90 transition-colors flex items-center gap-2">
                   List Property
@@ -97,8 +97,8 @@ export const Layout = () => {
               </Link>
               {user ? (
                 <>
-                  {user.role === 'landlord' && (
-                    <Link to="/dashboard" className="flex items-center gap-3 text-white/80 hover:text-white">
+                  {(user.role === 'landlord' || user.role === 'admin') && (
+                    <Link to={user.role === 'admin' ? "/admin" : "/dashboard"} className="flex items-center gap-3 text-white/80 hover:text-white">
                       <LayoutDashboard className="w-5 h-5" />
                       Dashboard
                     </Link>
@@ -112,7 +112,7 @@ export const Layout = () => {
                 <>
                   <button onClick={signIn} className="flex items-center gap-3 text-white/80 hover:text-white text-left">
                     <UserCircle2 className="w-5 h-5" />
-                    Log in
+                    Landlord Login
                   </button>
                   <button onClick={signIn} className="bg-white text-black px-6 py-3 rounded-xl justify-center hover:bg-white/90 transition-colors flex items-center gap-2 mt-4">
                     List Property

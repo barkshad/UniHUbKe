@@ -1,27 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Lock, ArrowRight, ShieldAlert } from 'lucide-react';
 import { motion } from 'motion/react';
+import { useAuth } from '../components/AuthProvider';
 
 export const AdminLogin = () => {
-  const [password, setPassword] = useState('');
+  const { signIn, user, loading } = useAuth();
   const [error, setError] = useState(false);
   const navigate = useNavigate();
 
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (password === '123456') {
-      localStorage.setItem('unihub_admin_auth', 'true');
-      navigate('/admin');
-    } else {
-      setError(true);
-      setTimeout(() => setError(false), 3000);
+  useEffect(() => {
+    if (!loading && user) {
+      if (user.role === 'admin') {
+        navigate('/admin');
+      } else {
+        setError(true);
+      }
     }
+  }, [user, loading, navigate]);
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await signIn();
   };
 
   return (
     <div className="min-h-screen bg-surface-900 flex items-center justify-center p-6 relative overflow-hidden">
-      {/* Background Ambience */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-brand-600/10 rounded-full blur-[120px]"></div>
         <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-10 mix-blend-overlay"></div>
@@ -38,21 +42,13 @@ export const AdminLogin = () => {
           </div>
           
           <h1 className="text-3xl font-display font-medium text-white mb-2 tracking-tight">Admin Portal</h1>
-          <p className="text-white/50 text-sm mb-8">Enter your operations password to access the CMS.</p>
+          <p className="text-white/50 text-sm mb-8">Secure access to the UniHub Management System.</p>
 
           <form onSubmit={handleLogin} className="space-y-6">
             <div>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter password"
-                className={`w-full bg-surface-800/50 border ${error ? 'border-rose-500/50' : 'border-white/10'} rounded-xl px-5 py-4 text-white focus:outline-none focus:border-brand-500 transition-colors placeholder:text-white/30`}
-                autoFocus
-              />
               {error && (
-                <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-rose-400 text-xs mt-2 flex items-center gap-1 font-medium">
-                  <ShieldAlert className="w-3 h-3" /> Invalid credentials
+                <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-rose-400 text-sm mb-4 flex items-center gap-1 font-medium bg-rose-500/10 p-3 rounded-lg border border-rose-500/20">
+                  <ShieldAlert className="w-4 h-4 shrink-0" /> Unauthorized. Your account lacks administrative privileges.
                 </motion.p>
               )}
             </div>
@@ -60,8 +56,9 @@ export const AdminLogin = () => {
             <button
               type="submit"
               className="w-full bg-white text-black py-4 rounded-xl font-medium flex items-center justify-center gap-2 hover:bg-white/90 transition-all hover:scale-[1.02]"
+              disabled={loading}
             >
-              Access System
+              Sign in with Google
               <ArrowRight className="w-4 h-4" />
             </button>
           </form>

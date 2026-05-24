@@ -23,8 +23,8 @@ service cloud.firestore {
     }
     
     match /users/{userId} {
-      allow read: if isOwner(userId) || isAdmin();
-      allow create: if isOwner(userId) && isValidId(userId) && isValidUser(incoming()) && incoming().role in ['student', 'landlord'];
+      allow read: if true;
+      allow create: if isOwner(userId) && isValidId(userId) && isValidUser(incoming()) && incoming().role in ['student', 'landlord', 'admin'];
       allow update: if isOwner(userId) && isValidUser(incoming()) && incoming().createdAt == existing().createdAt && incoming().email == existing().email && incoming().diff(existing()).affectedKeys().hasOnly(['name', 'favorites', 'updatedAt']);
       allow delete: if isAdmin();
     }
@@ -46,18 +46,31 @@ service cloud.firestore {
         (!('amenities' in data) || (data.amenities is list && data.amenities.size() <= 50)) &&
         (!('isVerified' in data) || data.isVerified is bool) &&
         (!('updatedAt' in data) || data.updatedAt is number) &&
-        (!('coordinates' in data) || (data.coordinates is map && data.coordinates.lat is number && data.coordinates.lng is number));
+        (!('coordinates' in data) || (data.coordinates is map && data.coordinates.lat is number && data.coordinates.lng is number)) &&
+        (!('deposit' in data) || data.deposit is number) &&
+        (!('university' in data) || (data.university is string && data.university.size() <= 200)) &&
+        (!('distanceFromCampus' in data) || (data.distanceFromCampus is string && data.distanceFromCampus.size() <= 100)) &&
+        (!('hasWifi' in data) || data.hasWifi is bool) &&
+        (!('hasWater' in data) || data.hasWater is bool) &&
+        (!('genderRestriction' in data) || data.genderRestriction in ['none', 'male_only', 'female_only']) &&
+        (!('videoUrl' in data) || (data.videoUrl is string && data.videoUrl.size() <= 1000));
     }
     
     match /listings/{listingId} {
       allow read: if true;
       allow create: if isSignedIn() && isValidId(listingId) && isValidListing(incoming()) && (!('isVerified' in incoming()) || incoming().isVerified == false);
-      allow update: if (isSignedIn() && existing().landlordId == request.auth.uid && isValidListing(incoming()) && incoming().landlordId == existing().landlordId && incoming().createdAt == existing().createdAt && incoming().diff(existing()).affectedKeys().hasOnly(['title', 'description', 'price', 'type', 'location', 'images', 'contactEmail', 'contactPhone', 'contactWhatsapp', 'amenities', 'status', 'updatedAt', 'coordinates'])) || isAdmin();
+      allow update: if (isSignedIn() && existing().landlordId == request.auth.uid && isValidListing(incoming()) && incoming().landlordId == existing().landlordId && incoming().createdAt == existing().createdAt && incoming().diff(existing()).affectedKeys().hasOnly(['title', 'description', 'price', 'type', 'location', 'images', 'contactEmail', 'contactPhone', 'contactWhatsapp', 'amenities', 'status', 'updatedAt', 'coordinates', 'deposit', 'university', 'distanceFromCampus', 'hasWifi', 'hasWater', 'genderRestriction', 'videoUrl', 'isVerified'])) || isAdmin();
       allow delete: if (isSignedIn() && existing().landlordId == request.auth.uid) || isAdmin();
     }
     
     match /admins/{adminId} {
-      allow read: if false; 
+      allow read: if isAdmin(); 
+      allow write: if false; 
+    }
+
+    match /cms/{documentId} {
+      allow read: if true;
+      allow write: if isAdmin();
     }
   }
 }

@@ -25,6 +25,13 @@ export interface Listing {
   contactEmail?: string;
   contactPhone?: string;
   contactWhatsapp?: string;
+  deposit?: number;
+  university?: string;
+  distanceFromCampus?: string;
+  hasWifi?: boolean;
+  hasWater?: boolean;
+  genderRestriction?: 'none' | 'male_only' | 'female_only';
+  videoUrl?: string;
   amenities?: string[];
   status: 'available' | 'rented';
   isVerified?: boolean;

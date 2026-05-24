@@ -36,7 +36,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             id: firebaseUser.uid,
             email: firebaseUser.email || '',
             name: firebaseUser.displayName || '',
-            role: 'student', 
+            role: 'landlord', 
             createdAt: Date.now(),
           };
           await setDoc(userRef, newUser);

@@ -118,9 +118,22 @@ export const ListingDetails = () => {
 
              <h1 className="text-4xl md:text-5xl font-display font-medium leading-tight mb-4">{listing.title}</h1>
              
-             <div className="flex items-start gap-2 text-white/60 mb-8 max-w-2xl">
+             <div className="flex items-start gap-2 text-white/60 mb-6 max-w-2xl">
                <MapPin className="w-5 h-5 shrink-0 mt-0.5" />
                <span className="text-lg leading-relaxed">{listing.location}</span>
+             </div>
+
+             <div className="flex flex-wrap gap-2 mb-8">
+               {listing.university && (
+                 <span className="px-3 py-1 bg-white/5 text-white/70 border border-white/10 rounded text-sm">
+                   Ideal for {listing.university}
+                 </span>
+               )}
+               {listing.distanceFromCampus && (
+                 <span className="px-3 py-1 bg-white/5 text-white/70 border border-white/10 rounded text-sm">
+                   {listing.distanceFromCampus}
+                 </span>
+               )}
              </div>
 
              <div className="prose prose-invert max-w-none">
@@ -129,19 +142,45 @@ export const ListingDetails = () => {
              </div>
           </div>
 
-          {listing.amenities && listing.amenities.length > 0 && (
-            <div className="border-t border-white/10 pt-10">
-              <h3 className="text-2xl font-display font-medium mb-6">Amenities</h3>
+          <div className="border-t border-white/10 pt-10">
+            <h3 className="text-2xl font-display font-medium mb-6">Details & Amenities</h3>
+            
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-y-4 mb-6">
+               {(listing.hasWifi || listing.hasWater || listing.genderRestriction !== 'none') && (
+                 <>
+                   {listing.hasWifi && (
+                     <div className="flex items-center gap-3 text-white/80">
+                       <CheckCircle2 className="w-5 h-5 text-brand-500" />
+                       <span>Free WiFi</span>
+                     </div>
+                   )}
+                   {listing.hasWater && (
+                     <div className="flex items-center gap-3 text-white/80">
+                       <CheckCircle2 className="w-5 h-5 text-brand-500" />
+                       <span>Water Supply</span>
+                     </div>
+                   )}
+                   {listing.genderRestriction !== 'none' && (
+                     <div className="flex items-center gap-3 text-white/80">
+                       <CheckCircle2 className="w-5 h-5 text-brand-500" />
+                       <span className="capitalize">{listing.genderRestriction.replace('_', ' ')}</span>
+                     </div>
+                   )}
+                 </>
+               )}
+            </div>
+
+            {listing.amenities && listing.amenities.length > 0 && (
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-y-4">
                 {listing.amenities.map((amenity, idx) => (
                   <div key={idx} className="flex items-center gap-3 text-white/80">
-                    <CheckCircle2 className="w-5 h-5 text-brand-500" />
+                    <CheckCircle2 className="w-5 h-5 text-white/30" />
                     <span>{amenity}</span>
                   </div>
                 ))}
               </div>
-            </div>
-          )}
+            )}
+          </div>
 
         </div>
 
@@ -149,12 +188,15 @@ export const ListingDetails = () => {
         <div className="relative">
           <div className="glass-panel p-8 rounded-[2rem] sticky top-28 flex flex-col gap-8">
             
-            <div className="pb-6 border-b border-white/5">
+            <div className="pb-6 border-b border-white/5 leading-tight">
                <p className="text-sm text-white/50 font-medium uppercase tracking-wider mb-2">Rent</p>
-               <div className="flex items-end gap-2">
+               <div className="flex items-end gap-2 mb-2">
                  <span className="text-5xl font-display font-medium text-white">${listing.price}</span>
                  <span className="text-white/50 pb-1">/ month</span>
                </div>
+               {listing.deposit && (
+                 <p className="text-sm text-white/50">+ ${listing.deposit} deposit required</p>
+               )}
             </div>
 
             <div className="flex flex-col gap-4">

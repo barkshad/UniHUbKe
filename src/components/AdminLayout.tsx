@@ -3,11 +3,14 @@ import { Navigate, Outlet } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
+import { useAuth } from './AuthProvider';
+
 export const AdminLayout = () => {
-  const adminAuth = localStorage.getItem('unihub_admin_auth');
+  const { user, loading, logout } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
   
-  if (adminAuth !== 'true') {
+  if (loading) return null;
+  if (!user || user.role !== 'admin') {
     return <Navigate to="/admin/login" replace />;
   }
 
@@ -71,8 +74,14 @@ const SidebarContent = ({ onClick }: { onClick?: () => void }) => (
     <div className="p-4 border-t border-white/5 shrink-0">
       <button 
         onClick={() => {
-          localStorage.removeItem('unihub_admin_auth');
-          window.location.href = '/admin/login';
+          if (onClick) onClick();
+          // Rely on useAuth logout from context? Wait, SidebarContent isn't accessing it.
+          // Let's just sign out globally.
+          import('../lib/firebase').then(({ auth }) => {
+            import('firebase/auth').then(({ signOut }) => {
+              signOut(auth);
+            });
+          });
         }}
         className="w-full py-2 px-4 rounded-lg bg-white/5 hover:bg-white/10 text-white/70 hover:text-white transition-colors text-sm font-medium text-left flex items-center gap-2"
       >
