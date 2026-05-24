@@ -121,7 +121,7 @@ export const HeroSearch = () => {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => setIsFocused(true)}
-          placeholder="Search for a university, town, or area..."
+          placeholder="Search for your campus, town, or estate..."
           className="w-full bg-surface-800/80 backdrop-blur-xl border border-white/20 text-white rounded-full py-5 pl-14 pr-32 focus:outline-none focus:border-white/50 focus:bg-surface-800 shadow-[0_0_30px_rgba(255,255,255,0.05)] focus:shadow-[0_0_40px_rgba(255,255,255,0.1)] transition-all text-lg"
         />
         <div className="absolute inset-y-2 right-2 flex items-center">
@@ -133,6 +133,7 @@ export const HeroSearch = () => {
           </button>
         </div>
       </form>
+      <div className="text-left text-xs text-white/30 mt-3 px-4">Try "Kabarak University", "Nakuru", or "London Estate"</div>
 
       <AnimatePresence>
         {isFocused && (query.trim() || recentSearches.length > 0) && (

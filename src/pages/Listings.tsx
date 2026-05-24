@@ -103,8 +103,8 @@ export const Listings = () => {
           ) : listings.length === 0 ? (
             <div className="text-center py-32 glass-panel rounded-3xl">
               <Building className="w-16 h-16 text-white/20 mx-auto mb-6" />
-              <h3 className="text-xl font-medium mb-2">No listings found</h3>
-              <p className="text-white/50">There are currently no properties matching your criteria.</p>
+              <h3 className="text-xl font-medium mb-2">We couldn't find any rentals in this area yet.</h3>
+              <p className="text-white/50">Try adjusting your filters or searching a nearby location.</p>
             </div>
           ) : (
             <div className="grid sm:grid-cols-2 gap-6">

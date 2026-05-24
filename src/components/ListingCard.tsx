@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Link } from 'react-router-dom';
-import { MapPin, Building, MessageCircle, Phone, BadgeCheck, Star } from 'lucide-react';
+import { MapPin, Building, MessageCircle, Phone, BadgeCheck, Star, PlayCircle } from 'lucide-react';
 import { Listing } from '../types';
 import { cn } from '../lib/utils';
 
@@ -13,6 +13,29 @@ interface ListingCardProps {
 }
 
 export const ListingCard: React.FC<ListingCardProps> = ({ listing, index = 0, onMouseEnter, onMouseLeave }) => {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    if (!videoRef.current) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            videoRef.current?.play().catch(() => {});
+          } else {
+            videoRef.current?.pause();
+          }
+        });
+      },
+      { threshold: 0.5 }
+    );
+    observer.observe(videoRef.current);
+    return () => observer.disconnect();
+  }, []);
+
+  const hasVideo = listing.videoUrl || (listing.images && listing.images[0] && listing.images[0].match(/\.(mp4|webm|ogg)$/i));
+  const mediaUrl = listing.videoUrl || (listing.images && listing.images[0]);
+
   return (
     <motion.div
       layout
@@ -25,9 +48,24 @@ export const ListingCard: React.FC<ListingCardProps> = ({ listing, index = 0, on
       onMouseLeave={onMouseLeave}
     >
       <Link to={`/listings/${listing.id}`} className="block h-full outline-none">
-        <div className="glass-panel p-2 pb-5 rounded-[2rem] hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(255,255,255,0.1)] transition-all duration-500 overflow-hidden h-full flex flex-col will-change-transform bg-surface-800/40 backdrop-blur-xl border-white/10 hover:border-white/20">
+        <div className="glass-panel p-2 pb-5 rounded-[2rem] hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(255,255,255,0.1)] transition-all duration-500 overflow-hidden h-full flex flex-col will-change-transform bg-surface-800/40 backdrop-blur-xl border-white/10 hover:border-white/20 relative">
+          
           <div className="relative h-64 rounded-[1.5rem] overflow-hidden mb-5 bg-surface-900 border border-white/5">
-            {listing.images && listing.images.length > 0 ? (
+            {hasVideo ? (
+              <>
+                <video 
+                  ref={videoRef}
+                  src={mediaUrl} 
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 will-change-transform"
+                  muted 
+                  loop 
+                  playsInline
+                />
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-black/40 backdrop-blur-sm p-3 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                  <PlayCircle className="w-8 h-8 text-white/90" />
+                </div>
+              </>
+            ) : listing.images && listing.images.length > 0 ? (
               <img 
                 src={listing.images[0]} 
                 alt={listing.title}
@@ -40,7 +78,7 @@ export const ListingCard: React.FC<ListingCardProps> = ({ listing, index = 0, on
               </div>
             )}
             
-            <div className="absolute inset-0 bg-gradient-to-t from-surface-900/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-surface-900 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
 
             <div className="absolute top-4 left-4 flex gap-2">
               <span className="px-3 py-1 bg-black/40 backdrop-blur-xl rounded-full text-xs font-semibold tracking-wide text-white capitalize border border-white/10 shadow-[0_4px_12px_rgba(0,0,0,0.2)]">
@@ -64,14 +102,21 @@ export const ListingCard: React.FC<ListingCardProps> = ({ listing, index = 0, on
             <div className="flex justify-between items-start mb-3 gap-4">
               <h3 className="text-xl font-medium font-display leading-tight flex-1 line-clamp-2 text-white/95">{listing.title}</h3>
               <div className="text-right shrink-0">
-                <p className="text-2xl font-display font-medium text-brand-400">${listing.price}</p>
+                <p className="text-2xl font-display font-medium text-white">${listing.price}</p>
                 <p className="text-[11px] uppercase tracking-wider text-white/40 font-semibold mt-0.5">per month</p>
               </div>
             </div>
             
-            <div className="flex items-center gap-2 text-white/50 text-sm mb-6">
-              <MapPin className="w-4 h-4 shrink-0 text-white/40" />
-              <span className="line-clamp-1">{listing.location}</span>
+            <div className="flex flex-col gap-1.5 text-white/50 text-sm mb-6">
+              <div className="flex items-center gap-2">
+                <MapPin className="w-4 h-4 shrink-0 text-white/40" />
+                <span className="line-clamp-1">{listing.location}</span>
+              </div>
+              {listing.distanceFromCampus && (
+                <div className="flex items-center gap-2 text-xs pl-6">
+                  <span className="truncate">{listing.distanceFromCampus}</span>
+                </div>
+              )}
             </div>
 
             <div className="mt-auto pt-5 border-t border-white/5 flex items-center justify-between">

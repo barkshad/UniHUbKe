@@ -217,15 +217,15 @@ export const LandlordDashboard = () => {
             <div className="space-y-2 md:col-span-2">
               <label className="text-sm font-medium text-white/70">Property Images</label>
               <div className="p-8 border-2 border-dashed border-white/10 rounded-xl bg-surface-800/50 text-center relative hover:border-white/50 hover:bg-white/5 transition-all">
-                 <input type="file" multiple accept="image/*" onChange={handleImageUpload} disabled={uploading} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed text-[0px]" title="" />
+                 <input type="file" multiple accept="image/*,video/*" onChange={handleImageUpload} disabled={uploading} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed text-[0px]" title="" />
                  <div className="flex flex-col items-center justify-center pointer-events-none">
                     {uploading ? (
                       <div className="w-10 h-10 border-2 border-white border-t-transparent rounded-full animate-spin mb-3"></div>
                     ) : (
                       <Plus className="w-10 h-10 text-white/20 mb-3" />
                     )}
-                    <p className="text-white/80 font-medium">{uploading ? 'Processing Upload...' : 'Click or drag images to upload'}</p>
-                    <p className="text-sm text-white/40 mt-1">Supports JPG, PNG (Max 5MB)</p>
+                    <p className="text-white/80 font-medium">{uploading ? 'Processing Upload...' : 'Click or drag media to upload'}</p>
+                    <p className="text-sm text-white/40 mt-1">Supports images and videos (Max 50MB)</p>
                  </div>
               </div>
               

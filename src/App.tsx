@@ -10,11 +10,11 @@ import { Listings } from './pages/Listings';
 import { ListingDetails } from './pages/ListingDetails';
 import { LandlordDashboard } from './pages/LandlordDashboard';
 import { AuthProvider } from './components/AuthProvider';
-import { AdminLayout } from './components/AdminLayout';
-import { AdminLogin } from './pages/AdminLogin';
-import { AdminDashboard } from './pages/AdminDashboard';
+import { MasterLogin } from './pages/MasterLogin';
+import { MasterLayout } from './components/MasterLayout';
+import { MasterDashboard } from './pages/MasterDashboard';
+import { MasterLandlords } from './pages/MasterLandlords';
 import { AdminMediaManager } from './pages/AdminMediaManager';
-import { AdminPlaceholder } from './pages/AdminPlaceholder';
 import { useEffect } from 'react';
 import Lenis from '@studio-freight/lenis';
 
@@ -53,15 +53,12 @@ export default function App() {
             <Route path="dashboard" element={<LandlordDashboard />} />
           </Route>
           
-          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/system-core" element={<MasterLogin />} />
           
-          <Route path="/admin" element={<AdminLayout />}>
-            <Route index element={<AdminDashboard />} />
-            <Route path="media" element={<AdminMediaManager />} />
-            <Route path="listings" element={<AdminPlaceholder title="Listings CMS" />} />
-            <Route path="users" element={<AdminPlaceholder title="User Management" />} />
-            <Route path="content" element={<AdminPlaceholder title="Site Content" />} />
-            <Route path="settings" element={<AdminPlaceholder title="Platform Settings" />} />
+          <Route path="/system-core" element={<MasterLayout />}>
+            <Route path="dashboard" element={<MasterDashboard />} />
+            <Route path="hero" element={<AdminMediaManager />} />
+            <Route path="landlords" element={<MasterLandlords />} />
           </Route>
         </Routes>
       </Router>

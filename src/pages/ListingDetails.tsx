@@ -137,8 +137,13 @@ export const ListingDetails = () => {
              </div>
 
              <div className="prose prose-invert max-w-none">
-               <h3 className="text-2xl font-display font-medium mb-4">About this property</h3>
-               <p className="text-white/70 whitespace-pre-line leading-relaxed text-lg">{listing.description}</p>
+               <h3 className="text-2xl font-display font-medium mb-4">Overview</h3>
+               <p className="text-white/70 whitespace-pre-line leading-relaxed text-lg">
+                 A simple, comfortable space {listing.university ? `located near ${listing.university}. ` : `in ${listing.location}. `}
+                 Ideal for students looking for affordability, safety, and convenience.
+                 <br/><br/>
+                 {listing.description}
+               </p>
              </div>
           </div>
 

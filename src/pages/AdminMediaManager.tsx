@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { collection, doc, setDoc, getDoc, onSnapshot } from 'firebase/firestore';
+import { collection, doc, setDoc, onSnapshot } from 'firebase/firestore';
 import { db } from '../lib/firebase';
-import { UploadCloud, Image as ImageIcon, Trash2, X, Plus } from 'lucide-react';
+import { UploadCloud, Image as ImageIcon, Trash2 } from 'lucide-react';
 import { motion } from 'motion/react';
 
 export const AdminMediaManager = () => {
