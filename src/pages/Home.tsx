@@ -107,12 +107,40 @@ export const Home = () => {
             </motion.div>
 
             <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+              initial="hidden"
+              animate="visible"
+              variants={{
+                hidden: { opacity: 0 },
+                visible: {
+                  opacity: 1,
+                  transition: { staggerChildren: 0.1, delayChildren: 0.1 }
+                }
+              }}
               className="text-5xl md:text-7xl lg:text-8xl font-display font-medium tracking-tight text-balance leading-[1.1] mb-8"
             >
-              Find trusted student <br className="hidden md:block"/> housing near <span className="gradient-text from-white to-white/50">campus.</span>
+              {['Find', 'trusted', 'student', 'housing', 'near'].map((word, i) => (
+                <React.Fragment key={i}>
+                  <motion.span 
+                    variants={{
+                      hidden: { opacity: 0, y: 20 },
+                      visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
+                    }}
+                    className={`inline-block ${i === 4 ? 'mr-[0.2em]' : 'mr-[0.25em]'}`}
+                  >
+                    {word}
+                  </motion.span>
+                  {word === 'student' && <br className="hidden md:block"/>}
+                </React.Fragment>
+              ))}
+              <motion.span 
+                variants={{
+                  hidden: { opacity: 0, y: 20 },
+                  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
+                }}
+                className="inline-block gradient-text from-white to-white/50"
+              >
+                campus.
+              </motion.span>
             </motion.h1>
 
             <motion.p

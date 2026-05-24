@@ -55,8 +55,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const provider = new GoogleAuthProvider();
     try {
       await signInWithPopup(auth, provider);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error signing in", error);
+      if (error?.code === 'auth/unauthorized-domain') {
+        alert("This domain is not authorized for OAuth operations. Please add the current URL to the Authorized Domains in the Firebase Console (Authentication -> Settings -> Authorized Domains).");
+      } else if (error?.code === 'auth/popup-closed-by-user') {
+        // Intentionally left blank
+      } else {
+        alert(`Sign in failed: ${error.message || "Unknown error"}. Try allowing popups or checking domain authorization.`);
+      }
     }
   };
 
