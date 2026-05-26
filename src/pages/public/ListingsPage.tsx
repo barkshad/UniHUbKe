@@ -15,7 +15,7 @@ export const ListingsPage = () => {
   
   const [locationQs, setLocationQs] = useState(searchParams.get('location') || '');
   const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || '');
-  const [maxPrice, setMaxPrice] = useState(Number(searchParams.get('maxPrice')) || 200000);
+  const [maxPrice, setMaxPrice] = useState(Number(searchParams.get('maxPrice')) || 50000);
   
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
 
@@ -41,14 +41,14 @@ export const ListingsPage = () => {
     const params = new URLSearchParams();
     if (locationQs) params.set('location', locationQs);
     if (selectedCategory) params.set('category', selectedCategory);
-    if (maxPrice < 2000000) params.set('maxPrice', maxPrice.toString());
+    if (maxPrice < 50000) params.set('maxPrice', maxPrice.toString());
     setSearchParams(params);
   };
 
   const clearFilters = () => {
     setLocationQs('');
     setSelectedCategory('');
-    setMaxPrice(2000000);
+    setMaxPrice(50000);
     setSearchParams(new URLSearchParams());
   };
 
@@ -132,14 +132,14 @@ export const ListingsPage = () => {
 
             <div className="space-y-3">
               <label className="text-sm font-medium text-white/70 uppercase tracking-widest flex justify-between tracking">
-                <span>Max Price (Yearly)</span>
+                <span>Max Price (Monthly)</span>
                 <span className="text-white">KSh {maxPrice.toLocaleString()}</span>
               </label>
               <input 
                 type="range"
                 min={0}
-                max={2000000}
-                step={50000}
+                max={50000}
+                step={1000}
                 value={maxPrice}
                 onChange={e => setMaxPrice(Number(e.target.value))}
                 onMouseUp={updateParams}

@@ -73,7 +73,7 @@ export const ListingCard: React.FC<ListingCardProps> = ({ property, index = 0, o
 
             <div className="absolute bottom-4 left-4 z-20">
               <span className="px-3 py-1 bg-white text-black rounded-full text-xs font-bold tracking-wide shadow-md">
-                {formatCurrency(property.price)}
+                {formatCurrency(property.price)} / mo
               </span>
             </div>
           </div>

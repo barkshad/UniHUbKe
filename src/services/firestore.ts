@@ -120,9 +120,6 @@ export async function updateSiteSettings(data: SiteSettings) {
 export async function seedData() {
   const batch = writeBatch(db);
 
-  // Note: For a real seed function, you would generate actual ids for agents and categories to use as refs
-  // But here we'll just demonstrate the structure
-  
   // Settings
   const settingsRef = doc(db, 'settings', 'general');
   batch.set(settingsRef, {
@@ -130,6 +127,18 @@ export async function seedData() {
     heroSubtitle: "Verified properties around JKUAT",
     ctaText: "Browse Properties",
     featuredProperties: []
+  });
+
+  const categories = [
+    { name: 'Bedsitters', slug: 'bedsitters', order: 1, isActive: true },
+    { name: 'Single Rooms', slug: 'single-rooms', order: 2, isActive: true },
+    { name: 'One Bedroom', slug: 'one-bedroom', order: 3, isActive: true },
+    { name: 'Two Bedroom', slug: 'two-bedroom', order: 4, isActive: true }
+  ];
+
+  categories.forEach((cat) => {
+    const docRef = doc(collection(db, 'categories'));
+    batch.set(docRef, cat);
   });
 
   await batch.commit();

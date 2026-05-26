@@ -127,7 +127,7 @@ export const PropertyDetailsPage = () => {
               </div>
               <div className="text-right flex-none bg-white p-4 rounded-2xl text-black shadow-lg">
                 <div className="text-2xl md:text-3xl font-display font-bold">{formatCurrency(property.price)}</div>
-                <div className="text-sm font-semibold uppercase tracking-widest opacity-60">per year</div>
+                <div className="text-sm font-semibold uppercase tracking-widest opacity-60">per month</div>
               </div>
             </div>
 

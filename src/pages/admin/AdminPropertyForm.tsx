@@ -132,7 +132,7 @@ export const AdminPropertyForm = () => {
               <input {...register('title', { required: true })} className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-white" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-zinc-400 mb-2">Price (Yearly) KSh *</label>
+              <label className="block text-sm font-medium text-zinc-400 mb-2">Price (Monthly) KSh *</label>
               <input type="number" {...register('price', { required: true })} className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-white" />
             </div>
             <div>

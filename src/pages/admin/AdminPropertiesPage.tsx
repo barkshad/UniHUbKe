@@ -54,7 +54,7 @@ export const AdminPropertiesPage = () => {
             <thead className="bg-zinc-800/50 text-zinc-400 border-b border-zinc-800">
               <tr>
                 <th className="px-6 py-4 font-medium uppercase tracking-wider">Property</th>
-                <th className="px-6 py-4 font-medium uppercase tracking-wider">Price/Yr</th>
+                <th className="px-6 py-4 font-medium uppercase tracking-wider">Price/Mo</th>
                 <th className="px-6 py-4 font-medium uppercase tracking-wider">Status</th>
                 <th className="px-6 py-4 font-medium uppercase tracking-wider text-right">Actions</th>
               </tr>
