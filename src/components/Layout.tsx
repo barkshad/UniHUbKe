@@ -10,8 +10,6 @@ export const Layout = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { user, signIn, logout } = useAuth();
   const location = useLocation();
-  const [cursorPos, setCursorPos] = useState({ x: -100, y: -100 });
-  const [isHovering, setIsHovering] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -25,36 +23,8 @@ export const Layout = () => {
     setMobileMenuOpen(false);
   }, [location.pathname]);
 
-  useEffect(() => {
-    const updateCursor = (e: MouseEvent) => {
-      setCursorPos({ x: e.clientX, y: e.clientY });
-      
-      const target = e.target as HTMLElement;
-      const isClickable = window.getComputedStyle(target).cursor === 'pointer' || 
-                          target.tagName.toLowerCase() === 'button' || 
-                          target.tagName.toLowerCase() === 'a' || 
-                          target.closest('button') || 
-                          target.closest('a');
-      
-      setIsHovering(!!isClickable);
-    };
-
-    window.addEventListener('mousemove', updateCursor);
-    return () => window.removeEventListener('mousemove', updateCursor);
-  }, []);
-
   return (
-    <div className={cn("min-h-screen flex flex-col bg-surface-900 selection:bg-white/30 selection:text-white", isHovering ? "cursor-hover" : "")}>
-      {/* Custom Cursor */}
-      <div 
-        className="cursor-dot hidden md:block"
-        style={{ left: `${cursorPos.x}px`, top: `${cursorPos.y}px` }}
-      />
-      <div 
-        className="cursor-ring hidden md:block"
-        style={{ left: `${cursorPos.x}px`, top: `${cursorPos.y}px` }}
-      />
-
+    <div className={cn("min-h-screen flex flex-col bg-surface-900 selection:bg-white/30 selection:text-white")}>
       <header
         className={cn(
           "fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b border-transparent",
