@@ -8,6 +8,7 @@ export const AdminSettingsPage = () => {
   const [settings, setSettings] = useState<SiteSettings | null>(null);
   const [properties, setProperties] = useState<Property[]>([]);
   const [isSaving, setIsSaving] = useState(false);
+  const [isUploadingHero, setIsUploadingHero] = useState(false);
 
   useEffect(() => {
     const init = async () => {
@@ -69,9 +70,45 @@ export const AdminSettingsPage = () => {
                 <label className="block text-sm font-medium text-zinc-400 mb-1">Hero Subtitle</label>
                 <input required value={settings.heroSubtitle} onChange={e => setSettings({...settings, heroSubtitle: e.target.value})} className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-white" />
              </div>
-             <div>
-                <label className="block text-sm font-medium text-zinc-400 mb-1">Hero Image/Video URL</label>
-                <input placeholder="https://..." value={settings.heroImage || ''} onChange={e => setSettings({...settings, heroImage: e.target.value})} className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-white" />
+             <div className="flex flex-col gap-1">
+                <label className="block text-sm font-medium text-zinc-400 mb-1">Hero Image/Video</label>
+                {settings.heroImage ? (
+                  <div className="relative aspect-video rounded-xl overflow-hidden border border-zinc-700 bg-black group">
+                    {settings.heroImage.match(/\.(mp4|webm)$/i) ? (
+                       <video src={settings.heroImage} autoPlay loop muted className="w-full h-full object-cover" />
+                    ) : (
+                       <img src={settings.heroImage} className="w-full h-full object-cover" alt="Hero" />
+                    )}
+                    <button type="button" onClick={() => setSettings({...settings, heroImage: ''})} className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <span className="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium">Remove Media</span>
+                    </button>
+                  </div>
+                ) : (
+                  <label className="w-full bg-zinc-950 border border-zinc-800 border-dashed hover:border-zinc-600 rounded-xl px-4 py-8 text-zinc-500 hover:text-white flex flex-col items-center justify-center gap-2 cursor-pointer transition-colors relative">
+                    <input type="file" accept="image/*,video/*" className="hidden" disabled={isUploadingHero} onChange={async (e) => {
+                       const file = e.target.files?.[0];
+                       if (!file) return;
+                       setIsUploadingHero(true);
+                       try {
+                         const { uploadToStorage } = await import('../../lib/storage');
+                         const res = await uploadToStorage(file, 'unihub/settings');
+                         setSettings({...settings, heroImage: res.secure_url});
+                       } catch (err) {
+                         toast.error("Failed to upload hero media");
+                       } finally {
+                         setIsUploadingHero(false);
+                       }
+                    }} />
+                    {isUploadingHero ? (
+                       <Loader2 className="w-6 h-6 animate-spin text-white" />
+                    ) : (
+                       <>
+                         <svg className="w-8 h-8 mb-1 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
+                         <span className="font-medium text-sm">Upload Hero Media</span>
+                       </>
+                    )}
+                  </label>
+                )}
              </div>
              <div>
                 <label className="block text-sm font-medium text-zinc-400 mb-1">CTA Button Text</label>

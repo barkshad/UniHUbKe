@@ -3,7 +3,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft, Loader2, Upload, X } from 'lucide-react';
 import { getProperty, createProperty, updateProperty, getCategories, getAgents } from '../../services/firestore';
-import { uploadToCloudinary } from '../../lib/cloudinary';
+import { uploadToStorage } from '../../lib/storage';
 import { Property, Category, Agent, MediaItem } from '../../types';
 import toast from 'react-hot-toast';
 
@@ -55,7 +55,7 @@ export const AdminPropertyForm = () => {
     setUploading(true);
     const folder = `unihub/properties/${id || 'draft'}`;
     try {
-        const uploadPromises = Array.from(files).map(f => uploadToCloudinary(f, folder));
+        const uploadPromises = Array.from(files).map(f => uploadToStorage(f, folder));
         const results = await Promise.all(uploadPromises);
         
         const newMedia: MediaItem[] = results.map((res, idx) => ({

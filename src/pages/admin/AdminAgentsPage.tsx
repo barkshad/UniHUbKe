@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { getAgents, createAgent, updateAgent, deleteAgent } from '../../services/firestore';
 import { Agent } from '../../types';
-import { Plus, Edit2, Trash2, X, Check } from 'lucide-react';
+import { Plus, Edit2, Trash2, X, Check, Upload, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { uploadToStorage } from '../../lib/storage';
 
 export const AdminAgentsPage = () => {
   const [agents, setAgents] = useState<Agent[]>([]);
@@ -16,6 +17,7 @@ export const AdminAgentsPage = () => {
   const [whatsapp, setWhatsapp] = useState('');
   const [photo, setPhoto] = useState('');
   const [isActive, setIsActive] = useState(true);
+  const [uploading, setUploading] = useState(false);
 
   const fetchAgents = async () => {
     setLoading(true);
@@ -100,9 +102,33 @@ export const AdminAgentsPage = () => {
                   <label className="block text-sm font-medium text-zinc-400 mb-1">Name *</label>
                   <input value={name} onChange={e => setName(e.target.value)} className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-white" />
                </div>
-               <div>
-                  <label className="block text-sm font-medium text-zinc-400 mb-1">Photo URL</label>
-                  <input value={photo} onChange={e => setPhoto(e.target.value)} className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-white" />
+               <div className="flex flex-col gap-1">
+                  <label className="block text-sm font-medium text-zinc-400">Agent Photo</label>
+                  {photo ? (
+                    <div className="relative w-16 h-16 rounded-full overflow-hidden border border-zinc-700 group mt-1">
+                      <img src={photo} className="w-full h-full object-cover" alt="Agent" />
+                      <button type="button" onClick={() => setPhoto('')} className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <X className="w-4 h-4 text-white" />
+                      </button>
+                    </div>
+                  ) : (
+                    <label className="w-full bg-zinc-950 border border-zinc-800 border-dashed hover:border-zinc-600 rounded-xl px-4 py-3 text-zinc-500 hover:text-white flex items-center justify-center gap-2 cursor-pointer transition-colors cursor-pointer relative h-[48px]">
+                      <input type="file" accept="image/*" className="hidden" disabled={uploading} onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        setUploading(true);
+                        try {
+                          const res = await uploadToStorage(file, 'unihub/agents');
+                          setPhoto(res.secure_url);
+                        } catch (err) {
+                           toast.error("Upload failed");
+                        } finally {
+                           setUploading(false);
+                        }
+                      }} />
+                      {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Upload className="w-4 h-4" /> Upload Photo</>}
+                    </label>
+                  )}
                </div>
                <div>
                   <label className="block text-sm font-medium text-zinc-400 mb-1">Phone *</label>
