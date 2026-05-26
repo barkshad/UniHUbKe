@@ -16,6 +16,7 @@ export const AdminPropertyForm = () => {
   
   const [media, setMedia] = useState<MediaItem[]>([]);
   const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   
   const [features, setFeatures] = useState<string[]>([]);
   const [featureInput, setFeatureInput] = useState('');
@@ -53,9 +54,19 @@ export const AdminPropertyForm = () => {
     if (!files?.length) return;
     
     setUploading(true);
+    setUploadProgress(0);
     const folder = `unihub/properties/${id || 'draft'}`;
+    let completedFiles = 0;
+    
     try {
-        const uploadPromises = Array.from(files).map(f => uploadToStorage(f, folder));
+        const uploadPromises = Array.from(files).map(async (f) => {
+           const res = await uploadToStorage(f, folder, (progress) => {
+              setUploadProgress(Math.floor(((completedFiles * 100) + progress) / files.length));
+           });
+           completedFiles++;
+           setUploadProgress(Math.floor((completedFiles / files.length) * 100));
+           return res;
+        });
         const results = await Promise.all(uploadPromises);
         
         const newMedia: MediaItem[] = results.map((res, idx) => ({
@@ -69,6 +80,7 @@ export const AdminPropertyForm = () => {
         toast.error("Upload failed: " + err.message);
     } finally {
         setUploading(false);
+        setUploadProgress(0);
     }
   };
 
@@ -205,10 +217,22 @@ export const AdminPropertyForm = () => {
               </div>
             ))}
             
-            <label className="aspect-square bg-zinc-950 border-2 border-dashed border-zinc-800 hover:border-zinc-600 rounded-xl flex flex-col items-center justify-center cursor-pointer transition-colors text-zinc-500 hover:text-white relative">
+            <label className="aspect-square bg-zinc-950 border-2 border-dashed border-zinc-800 hover:border-zinc-600 rounded-xl flex flex-col items-center justify-center cursor-pointer transition-colors text-zinc-500 hover:text-white relative p-2">
               <input type="file" multiple accept="image/*,video/*" className="hidden" onChange={onFileUpload} disabled={uploading} />
-              {uploading ? <Loader2 className="w-8 h-8 animate-spin" /> : <Upload className="w-8 h-8 mb-2" />}
-              <span className="text-sm font-medium">{uploading ? 'Uploading...' : 'Upload files'}</span>
+              {uploading ? (
+                 <div className="flex flex-col items-center w-full px-4 text-center">
+                   <Loader2 className="w-8 h-8 animate-spin mb-2" />
+                   <div className="w-full h-2 bg-zinc-800 rounded-full overflow-hidden mb-1">
+                      <div className="h-full bg-blue-500 transition-all duration-300" style={{ width: `${uploadProgress}%` }}></div>
+                   </div>
+                   <span className="text-xs font-medium">{uploadProgress}%</span>
+                 </div>
+              ) : (
+                 <>
+                   <Upload className="w-8 h-8 mb-2" />
+                   <span className="text-sm font-medium">Upload files</span>
+                 </>
+              )}
             </label>
           </div>
         </div>
