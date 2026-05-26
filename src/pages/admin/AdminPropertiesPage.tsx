@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { getProperties, deleteProperty } from '../../services/firestore';
+import { getProperties, deleteProperty, pushMockListingsLive } from '../../services/firestore';
 import { Property } from '../../types';
 import { Link } from 'react-router-dom';
-import { Plus, Edit2, Trash2, Home } from 'lucide-react';
+import { Plus, Edit2, Trash2, Home, RefreshCw } from 'lucide-react';
 import { formatCurrency } from '../../lib/utils';
 import toast from 'react-hot-toast';
 
 export const AdminPropertiesPage = () => {
   const [properties, setProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
+  const [pushingLive, setPushingLive] = useState(false);
 
   const fetchProps = async () => {
     setLoading(true);
@@ -36,16 +37,39 @@ export const AdminPropertiesPage = () => {
     }
   };
 
+  const handlePushLive = async () => {
+    if (!window.confirm("This will instantly add 22 mock listings to the site. Proceed?")) return;
+    setPushingLive(true);
+    try {
+      await pushMockListingsLive();
+      toast.success("Successfully pushed 22 mock listings live!");
+      fetchProps();
+    } catch (err: any) {
+      toast.error("Failed to push listings: " + err.message);
+    } finally {
+      setPushingLive(false);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <h1 className="text-3xl font-display font-medium">Properties</h1>
-        <Link 
-          to="/admin/properties/new" 
-          className="bg-white text-black px-4 py-2 rounded-lg font-medium hover:bg-zinc-200 transition-colors flex items-center gap-2"
-        >
-          <Plus className="w-5 h-5" /> New Property
-        </Link>
+        <div className="flex items-center gap-3">
+          <button 
+            onClick={handlePushLive}
+            disabled={pushingLive}
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center gap-2 disabled:opacity-50"
+          >
+            {pushingLive ? <RefreshCw className="w-5 h-5 animate-spin" /> : "Push Mock Listings Live"}
+          </button>
+          <Link 
+            to="/admin/properties/new" 
+            className="bg-white text-black px-4 py-2 rounded-lg font-medium hover:bg-zinc-200 transition-colors flex items-center gap-2"
+          >
+            <Plus className="w-5 h-5" /> New Property
+          </Link>
+        </div>
       </div>
 
       <div className="bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden">
