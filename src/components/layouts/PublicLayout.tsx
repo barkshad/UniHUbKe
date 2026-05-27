@@ -53,25 +53,6 @@ export const PublicLayout = () => {
             >
               Find Housing
             </Link>
-            <div className="flex items-center gap-3">
-              {user ? (
-                <Link 
-                  to="/admin" 
-                  className="text-sm font-medium bg-white text-surface-900 px-5 py-2.5 rounded-xl hover:bg-white/90 transition-all flex items-center gap-2 shadow-[0_0_20px_-5px_rgba(255,255,255,0.3)]"
-                >
-                  Admin Dashboard
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
-              ) : (
-                <Link 
-                  to="/admin/login" 
-                  className="text-sm font-medium text-white/60 hover:text-white transition-colors flex items-center gap-2 px-3 py-2"
-                >
-                  <UserCircle2 className="w-4 h-4" />
-                  Admin
-                </Link>
-              )}
-            </div>
           </nav>
 
           {/* Mobile Menu Toggle */}
@@ -106,23 +87,6 @@ export const PublicLayout = () => {
                 <Sparkles className="w-5 h-5" />
                 Find Housing
               </Link>
-              {user ? (
-                <Link 
-                  to="/admin" 
-                  className="flex items-center justify-center gap-2 p-4 rounded-2xl bg-white text-surface-900 font-medium"
-                >
-                  Admin Dashboard
-                  <ArrowRight className="w-5 h-5" />
-                </Link>
-              ) : (
-                <Link 
-                  to="/admin/login" 
-                  className="flex items-center gap-3 p-4 rounded-2xl bg-white/[0.02] border border-white/[0.04] text-white/80 hover:text-white"
-                >
-                  <UserCircle2 className="w-5 h-5" />
-                  Admin Login
-                </Link>
-              )}
             </motion.div>
           </motion.div>
         )}
@@ -172,7 +136,6 @@ export const PublicLayout = () => {
               <h4 className="font-medium text-white mb-4">Platform</h4>
               <ul className="space-y-3">
                 <li><Link to="/listings" className="text-sm text-white/40 hover:text-white transition-colors">Browse Listings</Link></li>
-                <li><Link to="/admin" className="text-sm text-white/40 hover:text-white transition-colors">Admin Portal</Link></li>
               </ul>
             </div>
           </div>
