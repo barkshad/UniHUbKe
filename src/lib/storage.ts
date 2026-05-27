@@ -1,7 +1,3 @@
-import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
-import { storage } from './firebase';
-import imageCompression from 'browser-image-compression';
-
 export interface FileUploadResult {
   public_id: string;
   secure_url: string;
@@ -14,50 +10,55 @@ export async function uploadToStorage(
   folder: string,
   onProgress?: (progress: number) => void
 ): Promise<FileUploadResult> {
+  const CLOUDINARY_CLOUD_NAME = 'dilrcexxe';
+  const CLOUDINARY_UPLOAD_PRESET = 'MingleKe';
+  
   const resourceType = file.type.startsWith("video/") ? "video" : "image";
-  const ext = file.name.split('.').pop() || (resourceType === 'video' ? 'mp4' : 'jpg');
-  const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 9)}.${ext}`;
-  const filePath = `${folder}/${fileName}`;
-  
-  let fileToUpload = file;
-  
-  if (resourceType === 'image') {
-    try {
-      const options = {
-        maxSizeMB: 1,
-        maxWidthOrHeight: 1920,
-        useWebWorker: true
-      };
-      fileToUpload = await imageCompression(file, options);
-    } catch (error) {
-      console.error("Image compression failed:", error);
-    }
-  }
+  const endpoint = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/${resourceType}/upload`;
 
-  const storageRef = ref(storage, filePath);
-  
-  // Upload file
-  const uploadTask = uploadBytesResumable(storageRef, fileToUpload);
-  
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+  formData.append("folder", folder);
+
   return new Promise((resolve, reject) => {
-    uploadTask.on(
-      'state_changed',
-      (snapshot) => {
-        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        if (onProgress) onProgress(progress);
-      },
-      (error) => {
-        reject(error);
-      },
-      async () => {
-        const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-        resolve({
-          public_id: filePath,
-          secure_url: downloadURL,
-          resource_type: resourceType,
-          format: ext,
-        });
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", endpoint, true);
+
+    xhr.upload.onprogress = (e) => {
+      if (e.lengthComputable && onProgress) {
+        const progress = Math.round((e.loaded / e.total) * 100);
+        onProgress(progress);
       }
-    );
+    };
+
+    xhr.onload = () => {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        try {
+          const data = JSON.parse(xhr.responseText);
+          resolve({
+            public_id: data.public_id,
+            secure_url: data.secure_url,
+            resource_type: data.resource_type,
+            format: data.format,
+          });
+        } catch (error) {
+          reject(new Error("Failed to parse Cloudinary response"));
+        }
+      } else {
+        try {
+          const errorData = JSON.parse(xhr.responseText);
+          reject(new Error(errorData.error?.message || "Upload failed"));
+        } catch {
+          reject(new Error(`Upload failed with status ${xhr.status}`));
+        }
+      }
+    };
+
+    xhr.onerror = () => {
+      reject(new Error("Network error during upload"));
+    };
+
+    xhr.send(formData);
   });
 }
