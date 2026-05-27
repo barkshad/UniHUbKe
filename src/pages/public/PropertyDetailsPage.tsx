@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { MapPin, CheckCircle, ArrowLeft, Loader2, MessageSquare, Phone, ShieldAlert } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
+import { MapPin, CheckCircle, ArrowLeft, MessageSquare, Phone, ShieldCheck, ChevronLeft, ChevronRight, Play, Building } from 'lucide-react';
 import { Property, Agent } from '../../types';
 import { getProperty, getAgent } from '../../services/firestore';
-import { formatCurrency, generateWhatsAppLink } from '../../lib/utils';
-import { motion } from 'motion/react';
-
-import { Skeleton } from '../../components/Skeleton';
+import { formatCurrency, generateWhatsAppLink, cn } from '../../lib/utils';
 
 export const PropertyDetailsPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -36,20 +34,21 @@ export const PropertyDetailsPage = () => {
 
   if (loading) {
     return (
-      <div className="container mx-auto px-4 py-8 max-w-6xl space-y-8 animate-pulse">
-        <Skeleton className="w-32 h-6" />
+      <div className="container mx-auto px-4 py-8 max-w-6xl">
+        <div className="w-32 h-6 bg-surface-800/30 rounded-lg shimmer mb-8" />
         <div className="flex flex-col lg:flex-row gap-10">
-          <div className="w-full lg:w-2/3 space-y-8">
-            <Skeleton className="aspect-video w-full rounded-3xl" />
-            <div className="flex gap-4">
-              <Skeleton className="w-24 h-24 rounded-2xl" />
-              <Skeleton className="w-24 h-24 rounded-2xl" />
+          <div className="w-full lg:w-2/3 space-y-6">
+            <div className="aspect-video w-full bg-surface-800/30 rounded-3xl shimmer" />
+            <div className="flex gap-3">
+              {[1, 2, 3, 4].map(i => (
+                <div key={i} className="w-20 h-20 bg-surface-800/30 rounded-xl shimmer" />
+              ))}
             </div>
-            <Skeleton className="h-40 w-full rounded-3xl" />
+            <div className="h-64 w-full bg-surface-800/30 rounded-3xl shimmer" />
           </div>
           <div className="w-full lg:w-1/3 space-y-6">
-            <Skeleton className="h-64 w-full rounded-3xl" />
-            <Skeleton className="h-48 w-full rounded-3xl" />
+            <div className="h-72 w-full bg-surface-800/30 rounded-3xl shimmer" />
+            <div className="h-48 w-full bg-surface-800/30 rounded-3xl shimmer" />
           </div>
         </div>
       </div>
@@ -58,9 +57,15 @@ export const PropertyDetailsPage = () => {
 
   if (!property) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center gap-6">
-        <h1 className="text-3xl font-display">Property not found</h1>
-        <Link to="/listings" className="text-white underline underline-offset-4">Return to listings</Link>
+      <div className="min-h-[70vh] flex flex-col items-center justify-center gap-6 px-4">
+        <div className="w-20 h-20 rounded-3xl bg-surface-800/30 flex items-center justify-center">
+          <Building className="w-10 h-10 text-white/10" />
+        </div>
+        <h1 className="text-2xl font-display font-medium">Property not found</h1>
+        <p className="text-white/40 text-center max-w-md">The property you&apos;re looking for doesn&apos;t exist or has been removed.</p>
+        <Link to="/listings" className="btn-secondary">
+          <ArrowLeft className="w-4 h-4" /> Back to listings
+        </Link>
       </div>
     );
   }
@@ -71,57 +76,127 @@ export const PropertyDetailsPage = () => {
     window.open(generateWhatsAppLink(agent.whatsappNumber, msg), '_blank');
   };
 
+  const nextMedia = () => {
+    if (property.media && property.media.length > 1) {
+      setActiveMedia((prev) => (prev + 1) % property.media!.length);
+    }
+  };
+
+  const prevMedia = () => {
+    if (property.media && property.media.length > 1) {
+      setActiveMedia((prev) => (prev - 1 + property.media!.length) % property.media!.length);
+    }
+  };
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-6xl">
-      <Link to="/listings" className="inline-flex items-center gap-2 text-white/50 hover:text-white mb-6 transition-colors">
-        <ArrowLeft className="w-5 h-5" /> Back to listings
+      <Link 
+        to="/listings" 
+        className="inline-flex items-center gap-2 text-white/40 hover:text-white mb-8 transition-colors text-sm font-medium"
+      >
+        <ArrowLeft className="w-4 h-4" /> Back to listings
       </Link>
 
       <div className="flex flex-col lg:flex-row gap-10">
         
-        {/* Left Column */}
+        {/* Left Column - Media & Details */}
         <div className="w-full lg:w-2/3 space-y-8">
           
           {/* Media Gallery */}
           <div className="space-y-4">
-            <div className="aspect-video bg-surface-900 rounded-3xl overflow-hidden relative border border-white/5 shadow-2xl">
+            <div className="relative aspect-video bg-surface-900 rounded-3xl overflow-hidden border border-white/[0.06] group">
+              {/* Status Overlay */}
               {property.status === 'occupied' && (
-                <div className="absolute inset-0 z-10 bg-black/60 backdrop-blur-sm flex items-center justify-center">
-                  <span className="px-6 py-3 bg-red-500/20 text-red-100 uppercase tracking-widest font-bold border border-red-500/30 rounded-full shadow-2xl">
-                    Occupied
+                <div className="absolute inset-0 z-20 bg-black/70 backdrop-blur-sm flex items-center justify-center">
+                  <span className="px-6 py-3 bg-rose-500/20 text-rose-200 uppercase tracking-widest text-sm font-bold border border-rose-500/30 rounded-xl">
+                    Currently Occupied
                   </span>
                 </div>
               )}
+              
               {property.media && property.media.length > 0 ? (
-                property.media[activeMedia].resource_type === 'video' ? (
-                  <video 
-                    src={property.media[activeMedia].secure_url} 
-                    className="w-full h-full object-cover" 
-                    controls 
-                    autoPlay
-                  />
-                ) : (
-                  <img 
-                    src={property.media[activeMedia].secure_url} 
-                    alt={property.title} 
-                    className="w-full h-full object-cover"
-                  />
-                )
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={activeMedia}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="w-full h-full"
+                  >
+                    {property.media[activeMedia].resource_type === 'video' ? (
+                      <video 
+                        src={property.media[activeMedia].secure_url} 
+                        className="w-full h-full object-cover" 
+                        controls 
+                        autoPlay
+                      />
+                    ) : (
+                      <img 
+                        src={property.media[activeMedia].secure_url} 
+                        alt={property.title} 
+                        className="w-full h-full object-cover"
+                      />
+                    )}
+                  </motion.div>
+                </AnimatePresence>
               ) : (
-                <div className="w-full h-full flex items-center justify-center text-white/20">No Media Available</div>
+                <div className="w-full h-full flex items-center justify-center">
+                  <Building className="w-16 h-16 text-white/10" />
+                </div>
+              )}
+
+              {/* Navigation Arrows */}
+              {property.media && property.media.length > 1 && (
+                <>
+                  <button 
+                    onClick={prevMedia}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 p-3 bg-black/40 backdrop-blur-md rounded-xl opacity-0 group-hover:opacity-100 transition-all hover:bg-black/60 z-10"
+                  >
+                    <ChevronLeft className="w-5 h-5" />
+                  </button>
+                  <button 
+                    onClick={nextMedia}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 p-3 bg-black/40 backdrop-blur-md rounded-xl opacity-0 group-hover:opacity-100 transition-all hover:bg-black/60 z-10"
+                  >
+                    <ChevronRight className="w-5 h-5" />
+                  </button>
+                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-1.5 z-10">
+                    {property.media.map((_, i) => (
+                      <button
+                        key={i}
+                        onClick={() => setActiveMedia(i)}
+                        className={cn(
+                          "w-2 h-2 rounded-full transition-all",
+                          i === activeMedia ? "bg-white w-6" : "bg-white/40 hover:bg-white/60"
+                        )}
+                      />
+                    ))}
+                  </div>
+                </>
               )}
             </div>
 
+            {/* Thumbnails */}
             {property.media && property.media.length > 1 && (
-              <div className="flex gap-4 overflow-x-auto pb-4 snap-x">
+              <div className="flex gap-3 overflow-x-auto pb-2 custom-scrollbar">
                 {property.media.map((m, i) => (
                   <button 
                     key={m.public_id}
                     onClick={() => setActiveMedia(i)}
-                    className={`shrink-0 w-24 h-24 rounded-2xl overflow-hidden snap-center transition-all ${activeMedia === i ? 'border-2 border-white ring-2 ring-white/20' : 'opacity-50 hover:opacity-100'}`}
+                    className={cn(
+                      "shrink-0 w-20 h-20 rounded-xl overflow-hidden transition-all relative",
+                      i === activeMedia 
+                        ? "ring-2 ring-white ring-offset-2 ring-offset-surface-950" 
+                        : "opacity-50 hover:opacity-100"
+                    )}
                   >
                     {m.resource_type === 'video' ? (
-                      <video src={m.secure_url} className="w-full h-full object-cover pointer-events-none" />
+                      <>
+                        <video src={m.secure_url} className="w-full h-full object-cover pointer-events-none" />
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                          <Play className="w-4 h-4 fill-white" />
+                        </div>
+                      </>
                     ) : (
                       <img src={m.secure_url} alt="" className="w-full h-full object-cover pointer-events-none" />
                     )}
@@ -131,116 +206,126 @@ export const PropertyDetailsPage = () => {
             )}
           </div>
 
-          {/* Info Card */}
-          <div className="glass-panel p-6 sm:p-8 rounded-3xl border border-white/5 space-y-8">
+          {/* Property Info Card */}
+          <div className="glass-card p-6 sm:p-8 space-y-8">
+            {/* Header */}
             <div className="flex flex-col sm:flex-row justify-between items-start gap-6">
               <div>
-                <h1 className="text-3xl md:text-5xl font-display font-medium mb-4">{property.title}</h1>
-                <div className="flex items-center gap-2 text-white/60 text-lg">
-                  <MapPin className="w-5 h-5 flex-none" />
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-display font-medium mb-3 text-balance">
+                  {property.title}
+                </h1>
+                <div className="flex items-center gap-2 text-white/50">
+                  <MapPin className="w-4 h-4" />
                   <span>{property.location}</span>
                 </div>
               </div>
-              <div className="text-left sm:text-right flex-none w-full sm:w-auto bg-white p-4 rounded-2xl text-black shadow-lg">
-                <div className="text-2xl md:text-3xl font-display font-bold">{formatCurrency(property.price)}</div>
-                <div className="text-sm font-semibold uppercase tracking-widest opacity-60">per month</div>
+              <div className="bg-white text-surface-900 px-5 py-4 rounded-2xl shrink-0">
+                <div className="text-2xl sm:text-3xl font-display font-bold">{formatCurrency(property.price)}</div>
+                <div className="text-xs font-medium uppercase tracking-wider text-surface-900/60">per month</div>
               </div>
             </div>
 
-            <div className="w-full h-px bg-white/10" />
+            <div className="h-px bg-white/[0.06]" />
 
+            {/* Description */}
             <div>
-              <h2 className="text-xl font-display font-medium mb-4">Description</h2>
-              <p className="text-white/70 leading-relaxed whitespace-pre-line text-lg">
+              <h2 className="text-lg font-medium mb-4">About this property</h2>
+              <p className="text-white/60 leading-relaxed whitespace-pre-line">
                 {property.description}
               </p>
             </div>
 
-            <div className="w-full h-px bg-white/10" />
-
-            <div>
-              <h2 className="text-xl font-display font-medium mb-6">Features & Amenities</h2>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-y-4 gap-x-2">
-                {property.features?.map((f, i) => (
-                  <div key={i} className="flex items-center gap-3">
-                    <CheckCircle className="w-5 h-5 text-green-400" />
-                    <span className="text-white/80">{f}</span>
+            {/* Features */}
+            {property.features && property.features.length > 0 && (
+              <>
+                <div className="h-px bg-white/[0.06]" />
+                <div>
+                  <h2 className="text-lg font-medium mb-6">Features & Amenities</h2>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                    {property.features.map((f, i) => (
+                      <div key={i} className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center shrink-0">
+                          <CheckCircle className="w-4 h-4 text-emerald-400" />
+                        </div>
+                        <span className="text-white/70 text-sm">{f}</span>
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-            </div>
+                </div>
+              </>
+            )}
           </div>
-
         </div>
 
-        {/* Right Column (Sticky) */}
+        {/* Right Column - Agent & Actions */}
         <div className="w-full lg:w-1/3 space-y-6">
-          <div className="sticky top-24 space-y-6">
+          <div className="lg:sticky lg:top-24 space-y-6">
 
             {/* Agent Card */}
-            <div className="glass-panel p-6 border border-white/10 rounded-3xl bg-surface-800/80">
-              <h3 className="text-lg font-medium mb-6 text-white/50 uppercase tracking-widest text-center">Listed By</h3>
-              <div className="flex flex-col items-center text-center gap-4 mb-8">
-                <div className="w-24 h-24 rounded-full overflow-hidden bg-surface-900 border-4 border-white/10 shadow-xl">
+            <div className="glass-card p-6">
+              <h3 className="text-xs font-medium text-white/40 uppercase tracking-widest text-center mb-6">Listed By</h3>
+              <div className="flex flex-col items-center text-center gap-4 mb-6">
+                <div className="w-20 h-20 rounded-2xl overflow-hidden bg-surface-800 border-2 border-white/[0.08]">
                   {agent?.profilePhotoURL ? (
                     <img src={agent.profilePhotoURL} alt={agent?.name || "Agent"} className="w-full h-full object-cover" />
                   ) : (
-                    <img src={`https://api.dicebear.com/7.x/initials/svg?seed=${agent?.name}`} alt="Agent" className="w-full h-full object-cover" />
+                    <div className="w-full h-full flex items-center justify-center font-display font-semibold text-2xl text-white/20">
+                      {agent?.name?.charAt(0) || '?'}
+                    </div>
                   )}
                 </div>
                 <div>
-                  <div className="text-2xl font-display font-medium mb-1">{agent?.name || "Unknown Agent"}</div>
-                  <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-green-500/10 text-green-400 text-sm font-semibold rounded-full border border-green-500/20">
-                    <CheckCircle className="w-4 h-4" /> Verified Agent
+                  <div className="text-xl font-display font-medium mb-2">{agent?.name || "Unknown Agent"}</div>
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-500/10 text-emerald-400 text-xs font-medium rounded-full border border-emerald-500/20">
+                    <ShieldCheck className="w-3.5 h-3.5" /> Verified Agent
                   </div>
                 </div>
               </div>
 
               {property.status === 'occupied' ? (
-                <div className="bg-red-500/10 border border-red-500/20 rounded-2xl p-4 text-center">
-                  <ShieldAlert className="w-8 h-8 text-red-500 mx-auto mb-2" />
-                  <p className="text-red-200 font-medium">This property is currently occupied.</p>
+                <div className="bg-rose-500/10 border border-rose-500/20 rounded-xl p-4 text-center">
+                  <p className="text-rose-300 text-sm font-medium">This property is currently occupied.</p>
                 </div>
               ) : (
                 <div className="flex flex-col gap-3">
                   <button 
                     onClick={handleWhatsApp}
-                    className="flex-1 bg-[#25D366] hover:bg-[#25D366]/90 text-white p-4 rounded-2xl font-medium text-lg flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-95 transition-all shadow-[0_0_20px_rgba(37,211,102,0.2)]"
+                    className="bg-[#25D366] hover:bg-[#25D366]/90 text-white p-4 rounded-xl font-medium flex items-center justify-center gap-2 transition-all hover:-translate-y-0.5 shadow-[0_4px_20px_-4px_rgba(37,211,102,0.4)]"
                   >
-                    <MessageSquare className="w-5 h-5 fill-current" />
-                    WhatsApp
+                    <MessageSquare className="w-5 h-5" />
+                    Message on WhatsApp
                   </button>
                   <a 
                     href={`tel:${agent?.phone.replace(/[^0-9+]/g, '')}`}
-                    className="flex-1 bg-white hover:bg-white/90 text-black p-4 rounded-2xl font-medium text-lg flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-95 transition-all shadow-[0_0_20px_rgba(255,255,255,0.2)]"
+                    className="bg-white hover:bg-white/90 text-surface-900 p-4 rounded-xl font-medium flex items-center justify-center gap-2 transition-all hover:-translate-y-0.5"
                   >
-                    <Phone className="w-5 h-5 fill-current" />
+                    <Phone className="w-5 h-5" />
                     Call {agent?.phone}
                   </a>
                 </div>
               )}
             </div>
 
-            {/* Safety Tips Card */}
-            <div className="glass-panel p-6 border border-white/5 rounded-3xl bg-surface-900/50">
-              <h3 className="flex items-center gap-2 font-display font-medium text-lg mb-4 text-white/80">
-                <ShieldAlert className="w-5 h-5 text-blue-400" /> Safety Tips
+            {/* Safety Tips */}
+            <div className="glass-card p-6">
+              <h3 className="flex items-center gap-2 font-medium text-sm mb-4 text-white/70">
+                <ShieldCheck className="w-4 h-4 text-blue-400" /> Safety Tips
               </h3>
-              <ul className="space-y-4 text-sm text-white/60">
+              <ul className="space-y-3 text-sm text-white/50">
                 <li className="flex items-start gap-3">
-                  <span className="w-1.5 h-1.5 rounded-full bg-blue-400 mt-1.5 flex-none" />
-                  Never pay before inspection
+                  <span className="w-1.5 h-1.5 rounded-full bg-blue-400 mt-2 shrink-0" />
+                  Never pay before physical inspection
                 </li>
                 <li className="flex items-start gap-3">
-                  <span className="w-1.5 h-1.5 rounded-full bg-blue-400 mt-1.5 flex-none" />
-                  Meet agents in open, public places
+                  <span className="w-1.5 h-1.5 rounded-full bg-blue-400 mt-2 shrink-0" />
+                  Meet agents in public places
                 </li>
                 <li className="flex items-start gap-3">
-                  <span className="w-1.5 h-1.5 rounded-full bg-blue-400 mt-1.5 flex-none" />
-                  Verify the agent's identity
+                  <span className="w-1.5 h-1.5 rounded-full bg-blue-400 mt-2 shrink-0" />
+                  Verify agent identity before payment
                 </li>
                 <li className="flex items-start gap-3">
-                  <span className="w-1.5 h-1.5 rounded-full bg-blue-400 mt-1.5 flex-none" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-blue-400 mt-2 shrink-0" />
                   Inspect the property thoroughly
                 </li>
               </ul>
@@ -248,7 +333,6 @@ export const PropertyDetailsPage = () => {
 
           </div>
         </div>
-
       </div>
     </div>
   );
