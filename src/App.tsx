@@ -7,6 +7,8 @@ import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { Home } from './pages/public/HomePage';
 import { ListingsPage } from './pages/public/ListingsPage';
 import { PropertyDetailsPage } from './pages/public/PropertyDetailsPage';
+import { NotFoundPage } from './pages/public/NotFoundPage';
+import { LegalPage } from './pages/public/LegalPage';
 import { PublicLayout } from './components/layouts/PublicLayout';
 
 import { AdminLoginPage } from './pages/admin/AdminLoginPage';
@@ -58,6 +60,9 @@ export default function App() {
             <Route index element={<Home />} />
             <Route path="listings" element={<ListingsPage />} />
             <Route path="properties/:id" element={<PropertyDetailsPage />} />
+            <Route path="privacy" element={<LegalPage type="privacy" />} />
+            <Route path="terms" element={<LegalPage type="terms" />} />
+            <Route path="*" element={<NotFoundPage />} />
           </Route>
           
           <Route path="/admin/login" element={<AdminLoginPage />} />

@@ -83,7 +83,7 @@ export const Home = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-              className="text-5xl md:text-7xl lg:text-8xl font-display font-medium tracking-tight text-balance leading-[1.1] mb-8"
+              className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-display font-medium tracking-tight text-balance leading-[1.1] mb-6 md:mb-8"
             >
               {settings?.heroTitle || "Find your perfect home."}
             </motion.h1>
@@ -92,7 +92,7 @@ export const Home = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-              className="text-lg md:text-xl text-white/50 max-w-2xl mb-12 text-balance leading-relaxed"
+              className="text-base sm:text-lg md:text-xl text-white/50 max-w-2xl mb-8 md:mb-12 text-balance leading-relaxed"
             >
               {settings?.heroSubtitle || "Browse verified properties. Designed from the ground up to give you exactly what you need to find your next home."}
             </motion.p>
@@ -101,10 +101,11 @@ export const Home = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+              className="w-full flex justify-center px-4"
             >
               <button 
                 onClick={() => navigate('/listings')}
-                className="btn-playful bg-white text-black px-8 py-4 rounded-full font-medium text-lg shadow-[0_0_20px_rgba(255,255,255,0.1)] flex items-center justify-center"
+                className="w-full sm:w-auto btn-playful bg-white text-black px-8 py-4 rounded-full font-medium text-lg shadow-[0_0_20px_rgba(255,255,255,0.1)] flex items-center justify-center"
               >
                 {settings?.ctaText || "Browse Listings"}
               </button>

@@ -4,6 +4,7 @@ import { Search, MapPin, Filter, X } from 'lucide-react';
 import { Property, Category } from '../../types';
 import { getProperties, getCategories } from '../../services/firestore';
 import { ListingCard } from '../../components/ListingCard';
+import { Skeleton } from '../../components/Skeleton';
 import { cn } from '../../lib/utils';
 import { useSearchParams } from 'react-router-dom';
 
@@ -161,8 +162,10 @@ export const ListingsPage = () => {
         </div>
 
         {loading ? (
-          <div className="w-full h-64 flex items-center justify-center">
-            <div className="w-8 h-8 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[1, 2, 3, 4, 5, 6].map(i => (
+              <Skeleton key={i} className="w-full h-[400px] rounded-3xl" />
+            ))}
           </div>
         ) : filteredProperties.length === 0 ? (
           <div className="w-full h-64 flex flex-col items-center justify-center text-center gap-4">

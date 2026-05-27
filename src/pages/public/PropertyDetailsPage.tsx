@@ -6,6 +6,8 @@ import { getProperty, getAgent } from '../../services/firestore';
 import { formatCurrency, generateWhatsAppLink } from '../../lib/utils';
 import { motion } from 'motion/react';
 
+import { Skeleton } from '../../components/Skeleton';
+
 export const PropertyDetailsPage = () => {
   const { id } = useParams<{ id: string }>();
   const [property, setProperty] = useState<Property | null>(null);
@@ -34,8 +36,22 @@ export const PropertyDetailsPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-8 h-8 flex-none border-2 border-white border-t-transparent rounded-full animate-spin" />
+      <div className="container mx-auto px-4 py-8 max-w-6xl space-y-8 animate-pulse">
+        <Skeleton className="w-32 h-6" />
+        <div className="flex flex-col lg:flex-row gap-10">
+          <div className="w-full lg:w-2/3 space-y-8">
+            <Skeleton className="aspect-video w-full rounded-3xl" />
+            <div className="flex gap-4">
+              <Skeleton className="w-24 h-24 rounded-2xl" />
+              <Skeleton className="w-24 h-24 rounded-2xl" />
+            </div>
+            <Skeleton className="h-40 w-full rounded-3xl" />
+          </div>
+          <div className="w-full lg:w-1/3 space-y-6">
+            <Skeleton className="h-64 w-full rounded-3xl" />
+            <Skeleton className="h-48 w-full rounded-3xl" />
+          </div>
+        </div>
       </div>
     );
   }
@@ -116,8 +132,8 @@ export const PropertyDetailsPage = () => {
           </div>
 
           {/* Info Card */}
-          <div className="glass-panel p-8 rounded-3xl border border-white/5 space-y-8">
-            <div className="flex justify-between items-start gap-6">
+          <div className="glass-panel p-6 sm:p-8 rounded-3xl border border-white/5 space-y-8">
+            <div className="flex flex-col sm:flex-row justify-between items-start gap-6">
               <div>
                 <h1 className="text-3xl md:text-5xl font-display font-medium mb-4">{property.title}</h1>
                 <div className="flex items-center gap-2 text-white/60 text-lg">
@@ -125,7 +141,7 @@ export const PropertyDetailsPage = () => {
                   <span>{property.location}</span>
                 </div>
               </div>
-              <div className="text-right flex-none bg-white p-4 rounded-2xl text-black shadow-lg">
+              <div className="text-left sm:text-right flex-none w-full sm:w-auto bg-white p-4 rounded-2xl text-black shadow-lg">
                 <div className="text-2xl md:text-3xl font-display font-bold">{formatCurrency(property.price)}</div>
                 <div className="text-sm font-semibold uppercase tracking-widest opacity-60">per month</div>
               </div>
