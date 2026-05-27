@@ -77,7 +77,10 @@
   }
   
   .glass-card-interactive {
-    @apply glass-card transition-all duration-500 ease-out;
+    @apply bg-surface-800/60 backdrop-blur-xl border border-white/[0.06] rounded-2xl transition-all duration-500 ease-out;
+    box-shadow: 
+      0 0 0 1px rgba(255,255,255,0.02) inset,
+      0 4px 24px -4px rgba(0,0,0,0.5);
   }
   
   .glass-card-interactive:hover {
@@ -160,7 +163,10 @@
   
   /* Stat Card Premium Style */
   .stat-card {
-    @apply glass-card p-6 relative overflow-hidden;
+    @apply bg-surface-800/60 backdrop-blur-xl border border-white/[0.06] rounded-2xl p-6 relative overflow-hidden;
+    box-shadow: 
+      0 0 0 1px rgba(255,255,255,0.02) inset,
+      0 4px 24px -4px rgba(0,0,0,0.5);
   }
   
   .stat-card::after {
@@ -312,6 +318,7 @@
   }
   
   .action-icon-danger {
-    @apply action-icon hover:text-rose-400 hover:bg-rose-500/10;
+    @apply p-2 rounded-lg text-white/40 transition-all duration-200;
+    @apply hover:text-rose-400 hover:bg-rose-500/10;
   }
 }
