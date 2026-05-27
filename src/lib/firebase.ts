@@ -8,6 +8,6 @@ export const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const storage = getStorage(app);
 export const db = initializeFirestore(app, {
-  experimentalForceLongPolling: true,
+  experimentalAutoDetectLongPolling: true,
   localCache: memoryLocalCache()
 }, (firebaseConfig as any).firestoreDatabaseId || undefined);

@@ -88,15 +88,6 @@ export const Home = () => {
               {settings?.heroTitle || "Find your perfect home."}
             </motion.h1>
 
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-              className="text-base sm:text-lg md:text-xl text-white/50 max-w-2xl mb-8 md:mb-12 text-balance leading-relaxed"
-            >
-              {settings?.heroSubtitle || "Browse verified properties. Designed from the ground up to give you exactly what you need to find your next home."}
-            </motion.p>
-
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -112,24 +103,6 @@ export const Home = () => {
             </motion.div>
           </div>
         </div>
-
-        {/* Floating UI Elements Demo */}
-        <motion.div
-           initial={{ opacity: 0, y: 40 }}
-           animate={{ opacity: 1, y: 0 }}
-           transition={{ duration: 1, delay: 0.6, ease: [0.16, 1, 0.3, 1] }} 
-           className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/4 w-full max-w-7xl px-6 pointer-events-none hidden lg:block z-10"
-        >
-          <div className="w-full h-80 bg-gradient-to-t from-surface-900 via-surface-900/80 to-transparent absolute bottom-0 left-0 z-20 pointer-events-none"></div>
-          
-          <div className="relative z-10 flex gap-6 w-full justify-center overflow-visible transform perspective-1000 rotate-x-6 scale-[0.85] transform-origin-bottom">
-            {featuredListings.slice(0, 3).map((listing, i) => (
-              <div key={listing.id} className={cn("w-[350px] shrink-0 pointer-events-auto transition-transform duration-700 hover:-translate-y-8 hover:rotate-x-0 hover:scale-110", i === 1 && "-translate-y-12")}>
-                <ListingCard property={listing} />
-              </div>
-            ))}
-          </div>
-        </motion.div>
       </section>
 
       {/* Trust Section */}
