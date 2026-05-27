@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { Home, CheckCircle, XCircle, Users, TrendingUp, ArrowUpRight, Activity, Zap } from 'lucide-react';
+import { Home, CheckCircle, XCircle, Users, TrendingUp, ArrowUpRight, Activity, Zap, Tag, Settings } from 'lucide-react';
 import { getProperties, getAgents, seedData } from '../../services/firestore';
 import toast from 'react-hot-toast';
 import { cn } from '../../lib/utils';
@@ -123,34 +124,34 @@ export const AdminDashboard = () => {
             <Activity className="w-5 h-5 text-white/30" />
           </div>
           <div className="grid grid-cols-2 gap-3">
-            <a href="#/admin/properties/new" className="group flex flex-col gap-2 p-4 rounded-xl bg-white/[0.02] border border-white/[0.04] hover:border-white/[0.08] hover:bg-white/[0.04] transition-all">
+            <Link to="/admin/properties/new" className="group flex flex-col gap-2 p-4 rounded-xl bg-white/[0.02] border border-white/[0.04] hover:border-white/[0.08] hover:bg-white/[0.04] transition-all">
               <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-400">
                 <Home className="w-5 h-5" />
               </div>
               <span className="font-medium text-sm">Add Property</span>
               <span className="text-xs text-white/40">Create new listing</span>
-            </a>
-            <a href="#/admin/agents" className="group flex flex-col gap-2 p-4 rounded-xl bg-white/[0.02] border border-white/[0.04] hover:border-white/[0.08] hover:bg-white/[0.04] transition-all">
+            </Link>
+            <Link to="/admin/agents" className="group flex flex-col gap-2 p-4 rounded-xl bg-white/[0.02] border border-white/[0.04] hover:border-white/[0.08] hover:bg-white/[0.04] transition-all">
               <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-400">
                 <Users className="w-5 h-5" />
               </div>
               <span className="font-medium text-sm">Manage Agents</span>
               <span className="text-xs text-white/40">View all agents</span>
-            </a>
-            <a href="#/admin/categories" className="group flex flex-col gap-2 p-4 rounded-xl bg-white/[0.02] border border-white/[0.04] hover:border-white/[0.08] hover:bg-white/[0.04] transition-all">
+            </Link>
+            <Link to="/admin/categories" className="group flex flex-col gap-2 p-4 rounded-xl bg-white/[0.02] border border-white/[0.04] hover:border-white/[0.08] hover:bg-white/[0.04] transition-all">
               <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-400">
                 <Tag className="w-5 h-5" />
               </div>
               <span className="font-medium text-sm">Categories</span>
               <span className="text-xs text-white/40">Organize listings</span>
-            </a>
-            <a href="#/admin/settings" className="group flex flex-col gap-2 p-4 rounded-xl bg-white/[0.02] border border-white/[0.04] hover:border-white/[0.08] hover:bg-white/[0.04] transition-all">
+            </Link>
+            <Link to="/admin/settings" className="group flex flex-col gap-2 p-4 rounded-xl bg-white/[0.02] border border-white/[0.04] hover:border-white/[0.08] hover:bg-white/[0.04] transition-all">
               <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-400">
                 <Settings className="w-5 h-5" />
               </div>
               <span className="font-medium text-sm">Settings</span>
               <span className="text-xs text-white/40">Configure site</span>
-            </a>
+            </Link>
           </div>
         </motion.div>
 
@@ -175,9 +176,6 @@ export const AdminDashboard = () => {
     </div>
   );
 };
-
-// Import missing icons at usage
-import { Tag, Settings } from 'lucide-react';
 
 interface StatCardProps {
   icon: React.ComponentType<{ className?: string }>;
