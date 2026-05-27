@@ -79,23 +79,13 @@ export const Home = () => {
 
         <div className="container mx-auto px-6 max-w-7xl relative z-10">
           <div className="flex flex-col items-center text-center max-w-4xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-              className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 mb-8 backdrop-blur-md"
-            >
-              <span className="w-2 h-2 rounded-full bg-white animate-pulse"></span>
-              <span className="text-sm font-medium text-white/80">Premium Student Housing</span>
-            </motion.div>
-
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
               className="text-5xl md:text-7xl lg:text-8xl font-display font-medium tracking-tight text-balance leading-[1.1] mb-8"
             >
-              {settings?.heroTitle || "Find your perfect student home."}
+              {settings?.heroTitle || "Find your perfect home."}
             </motion.h1>
 
             <motion.p
@@ -104,7 +94,7 @@ export const Home = () => {
               transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
               className="text-lg md:text-xl text-white/50 max-w-2xl mb-12 text-balance leading-relaxed"
             >
-              {settings?.heroSubtitle || "Browse verified properties out there. Designed from the ground up for students looking for quality."}
+              {settings?.heroSubtitle || "Browse verified properties. Designed from the ground up to give you exactly what you need to find your next home."}
             </motion.p>
 
             <motion.div
