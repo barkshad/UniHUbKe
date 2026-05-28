@@ -4,6 +4,7 @@
  */
 
 import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import ScrollToTop from './components/ScrollToTop';
 import { Home } from './pages/public/HomePage';
 import { ListingsPage } from './pages/public/ListingsPage';
 import { PropertyDetailsPage } from './pages/public/PropertyDetailsPage';
@@ -55,6 +56,7 @@ export default function App() {
     <AuthProvider>
       <Toaster position="top-right" />
       <Router>
+        <ScrollToTop />
         <Routes>
           <Route path="/" element={<PublicLayout />}>
             <Route index element={<Home />} />
