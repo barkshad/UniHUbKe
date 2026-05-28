@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Menu, X, Home as HomeIcon, UserCircle2, ArrowRight } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { useAuth } from '../../context/AuthContext';
+import { AppDownloadPrompt } from '../AppDownloadPrompt';
 
 export const PublicLayout = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -129,6 +130,8 @@ export const PublicLayout = () => {
           </div>
         </div>
       </footer>
+
+      <AppDownloadPrompt />
     </div>
   );
 };
