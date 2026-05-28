@@ -31,7 +31,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (userSnap.exists()) {
           setUser(userSnap.data() as User);
         } else {
-          // New user defaults to student, but could be setup differently
+          // New user defaults to landlord for the demo
           const newUser: User = {
             id: firebaseUser.uid,
             email: firebaseUser.email || '',

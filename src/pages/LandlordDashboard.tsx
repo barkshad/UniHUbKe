@@ -250,7 +250,7 @@ export const LandlordDashboard = () => {
 
             <div className="space-y-2 md:col-span-2 pt-2 border-t border-white/5">
                <h3 className="text-lg font-medium text-white mb-2">Direct Contact Channels</h3>
-               <p className="text-sm text-white/40 mb-4">Students will use these to contact you. At least one is recommended.</p>
+               <p className="text-sm text-white/40 mb-4">Renters will use these to contact you. At least one is recommended.</p>
             </div>
 
             <div className="space-y-2">
@@ -288,7 +288,7 @@ export const LandlordDashboard = () => {
         <div className="text-center py-24 bg-surface-800/30 rounded-[2rem] border border-white/5 border-dashed">
           <Building className="w-12 h-12 text-white/20 mx-auto mb-4" />
           <h3 className="text-xl font-medium mb-2">Portfolio Empty</h3>
-          <p className="text-white/50 mb-6 max-w-sm mx-auto">You haven't listed any properties. Add your first rental to reach thousands of students.</p>
+          <p className="text-white/50 mb-6 max-w-sm mx-auto">You haven't listed any properties. Add your first rental to reach thousands of renters.</p>
         </div>
       ) : (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">

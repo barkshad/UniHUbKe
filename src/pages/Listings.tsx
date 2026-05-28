@@ -57,7 +57,7 @@ export const Listings = () => {
         <div>
           <h1 className="text-4xl md:text-5xl font-display font-medium mb-4">Discover Housing</h1>
           <p className="text-white/50 text-lg max-w-xl">
-            {search ? `Showing results for "${search}"` : "Browse curated, verified student accommodations."}
+            {search ? `Showing results for "${search}"` : "Browse curated, verified accommodations."}
           </p>
         </div>
         

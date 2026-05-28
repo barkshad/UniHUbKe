@@ -38,7 +38,7 @@ export const LegalPage = ({ type }: { type: 'privacy' | 'terms' }) => {
             </h2>
             <p>
               {type === 'privacy' 
-                ? 'We only collect information necessary to provide our student housing connection services effectively. This may include your name, contact information, and basic interaction data.' 
+                ? 'We only collect information necessary to provide our housing connection services effectively. This may include your name, contact information, and basic interaction data.' 
                 : 'Users must provide accurate information when registering or listing properties. Fraudulent behavior will result in immediate account termination.'}
             </p>
           </section>
@@ -46,7 +46,7 @@ export const LegalPage = ({ type }: { type: 'privacy' | 'terms' }) => {
           <section className="space-y-4">
             <h2 className="text-2xl font-display font-medium text-white">3. Platform Usage</h2>
             <p>
-              UniHub acts as a marketplace to connect students with landlords. We aim to verify listings but strongly advise students to inspect properties before making monetary commitments.
+              UniHub acts as a marketplace to connect renters with landlords. We aim to verify listings but strongly advise renters to inspect properties before making monetary commitments.
             </p>
           </section>
         </div>
