@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { MapPin, CheckCircle, ArrowLeft, Loader2, MessageSquare, Phone, ShieldAlert } from 'lucide-react';
+import { MapPin, CheckCircle, ArrowLeft, Loader2, MessageSquare, Phone, ShieldAlert, Building } from 'lucide-react';
 import { Property, Agent } from '../../types';
 import { getProperty, getAgent } from '../../services/firestore';
-import { formatCurrency, generateWhatsAppLink } from '../../lib/utils';
+import { formatCurrency, generateWhatsAppLink, cn } from '../../lib/utils';
+import { optimizeCloudinaryUrl, getCloudinaryPosterNode, optimizeThumbnailUrl } from '../../lib/optimizeMedia';
 import { motion } from 'motion/react';
 
 import { Skeleton } from '../../components/Skeleton';
@@ -14,6 +15,8 @@ export const PropertyDetailsPage = () => {
   const [agent, setAgent] = useState<Agent | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeMedia, setActiveMedia] = useState(0);
+  const [isMediaLoaded, setIsMediaLoaded] = useState(false);
+  const [mediaError, setMediaError] = useState(false);
 
   useEffect(() => {
     const fetchIt = async () => {
@@ -33,6 +36,11 @@ export const PropertyDetailsPage = () => {
     };
     fetchIt();
   }, [id]);
+
+  useEffect(() => {
+    setIsMediaLoaded(false);
+    setMediaError(false);
+  }, [activeMedia]);
 
   if (loading) {
     return (
@@ -71,6 +79,10 @@ export const PropertyDetailsPage = () => {
     window.open(generateWhatsAppLink(agent.whatsappNumber, msg), '_blank');
   };
 
+  const currentMedia = property.media && property.media.length > 0 ? property.media[activeMedia] : null;
+  const optimizedUrl = currentMedia ? optimizeCloudinaryUrl(currentMedia.secure_url, currentMedia.resource_type) : '';
+  const currentPoster = currentMedia ? getCloudinaryPosterNode(currentMedia.secure_url) : '';
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-6xl">
       <Link to="/listings" className="inline-flex items-center gap-2 text-white/50 hover:text-white mb-6 transition-colors">
@@ -86,47 +98,87 @@ export const PropertyDetailsPage = () => {
           <div className="space-y-4">
             <div className="aspect-video bg-surface-900 rounded-3xl overflow-hidden relative border border-white/5 shadow-2xl">
               {property.status === 'occupied' && (
-                <div className="absolute inset-0 z-10 bg-black/60 backdrop-blur-sm flex items-center justify-center">
-                  <span className="px-6 py-3 bg-red-500/20 text-red-100 uppercase tracking-widest font-bold border border-red-500/30 rounded-full shadow-2xl">
+                <div className="absolute top-4 left-4 z-20">
+                  <span className="px-6 py-3 bg-red-500/20 backdrop-blur-md text-red-100 uppercase tracking-widest font-bold border border-red-500/30 rounded-full shadow-2xl">
                     Occupied
                   </span>
                 </div>
               )}
-              {property.media && property.media.length > 0 ? (
-                property.media[activeMedia].resource_type === 'video' ? (
+              
+              {!isMediaLoaded && currentMedia && !mediaError && (
+                 <div className="absolute inset-0 flex items-center justify-center bg-surface-800 animate-pulse">
+                   <Loader2 className="w-10 h-10 text-white/20 animate-spin" />
+                 </div>
+              )}
+
+              {currentMedia && !mediaError ? (
+                currentMedia.resource_type === 'video' ? (
                   <video 
-                    src={property.media[activeMedia].secure_url} 
-                    className="w-full h-full object-cover" 
+                    key={optimizedUrl}
+                    src={optimizedUrl} 
+                    poster={currentPoster}
+                    onLoadedData={() => setIsMediaLoaded(true)}
+                    onError={() => setMediaError(true)}
+                    ref={(el) => {
+                      if (el && el.readyState >= 2) {
+                        setIsMediaLoaded(true);
+                      }
+                    }}
+                    className={cn(
+                      "w-full h-full object-cover transition-opacity duration-700",
+                      isMediaLoaded ? "opacity-100" : "opacity-0"
+                    )}
                     controls 
                     autoPlay
+                    muted
                   />
                 ) : (
                   <img 
-                    src={property.media[activeMedia].secure_url} 
+                    key={optimizedUrl}
+                    src={optimizedUrl} 
                     alt={property.title} 
-                    className="w-full h-full object-cover"
+                    onLoad={() => setIsMediaLoaded(true)}
+                    onError={() => setMediaError(true)}
+                    ref={(img) => {
+                      if (img && img.complete) {
+                        setIsMediaLoaded(true);
+                      }
+                    }}
+                    className={cn(
+                      "w-full h-full object-cover transition-opacity duration-700",
+                      isMediaLoaded ? "opacity-100" : "opacity-0"
+                    )}
                   />
                 )
               ) : (
-                <div className="w-full h-full flex items-center justify-center text-white/20">No Media Available</div>
+                <div className="w-full h-full flex flex-col items-center justify-center text-white/20 bg-surface-800">
+                  <Building className="w-12 h-12 mb-4 opacity-50" />
+                  <p>{mediaError ? "Media failed to load" : "No Media Available"}</p>
+                </div>
               )}
             </div>
 
             {property.media && property.media.length > 1 && (
               <div className="flex gap-4 overflow-x-auto pb-4 snap-x">
-                {property.media.map((m, i) => (
-                  <button 
-                    key={m.public_id}
-                    onClick={() => setActiveMedia(i)}
-                    className={`shrink-0 w-24 h-24 rounded-2xl overflow-hidden snap-center transition-all ${activeMedia === i ? 'border-2 border-white ring-2 ring-white/20' : 'opacity-50 hover:opacity-100'}`}
-                  >
-                    {m.resource_type === 'video' ? (
-                      <video src={m.secure_url} className="w-full h-full object-cover pointer-events-none" />
-                    ) : (
-                      <img src={m.secure_url} alt="" className="w-full h-full object-cover pointer-events-none" />
-                    )}
-                  </button>
-                ))}
+                {property.media.map((m, i) => {
+                  const mThumbUrl = optimizeThumbnailUrl(m.secure_url);
+                  return (
+                    <button 
+                      key={m.public_id}
+                      onClick={() => setActiveMedia(i)}
+                      className={`relative shrink-0 w-24 h-24 rounded-2xl overflow-hidden snap-center transition-all ${activeMedia === i ? 'border-2 border-white ring-2 ring-white/20 scale-105' : 'opacity-50 hover:opacity-100 hover:scale-105'}`}
+                    >
+                      <img src={mThumbUrl} alt="" loading="lazy" className="w-full h-full object-cover pointer-events-none" />
+                      {m.resource_type === 'video' && (
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+                           <div className="w-8 h-8 rounded-full bg-white/20 backdrop-blur flex items-center justify-center">
+                             <div className="w-0 h-0 border-t-4 border-b-4 border-l-6 border-transparent border-l-white ml-1"></div>
+                           </div>
+                        </div>
+                      )}
+                    </button>
+                  );
+                })}
               </div>
             )}
           </div>

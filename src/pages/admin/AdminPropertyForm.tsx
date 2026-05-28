@@ -4,6 +4,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft, Loader2, Upload, X } from 'lucide-react';
 import { getProperty, createProperty, updateProperty, getCategories, getAgents } from '../../services/firestore';
 import { uploadToStorage } from '../../lib/storage';
+import { optimizeCloudinaryUrl, optimizeThumbnailUrl } from '../../lib/optimizeMedia';
 import { Property, Category, Agent, MediaItem } from '../../types';
 import toast from 'react-hot-toast';
 
@@ -207,9 +208,9 @@ export const AdminPropertyForm = () => {
             {media.map((item, idx) => (
               <div key={idx} className="relative aspect-square bg-zinc-950 rounded-xl overflow-hidden border border-zinc-800 group">
                 {item.resource_type === 'video' ? (
-                  <video src={item.secure_url} className="w-full h-full object-cover" />
+                  <video src={optimizeCloudinaryUrl(item.secure_url, 'video')} className="w-full h-full object-cover" />
                 ) : (
-                  <img src={item.secure_url} alt="" className="w-full h-full object-cover" />
+                  <img src={optimizeThumbnailUrl(item.secure_url)} alt="" className="w-full h-full object-cover" />
                 )}
                 <button type="button" onClick={() => removeMedia(idx)} className="absolute top-2 right-2 p-1.5 bg-black/50 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-md">
                    <X className="w-4 h-4" />

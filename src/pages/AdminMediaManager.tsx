@@ -3,6 +3,7 @@ import { collection, doc, setDoc, onSnapshot } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { UploadCloud, Image as ImageIcon, Trash2 } from 'lucide-react';
 import { motion } from 'motion/react';
+import { optimizeCloudinaryUrl } from '../lib/optimizeMedia';
 
 export const AdminMediaManager = () => {
   const [heroMedia, setHeroMedia] = useState<string[]>([]);
@@ -70,10 +71,10 @@ export const AdminMediaManager = () => {
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
             {heroMedia.map((url, i) => (
               <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} key={i} className="group relative rounded-xl overflow-hidden aspect-video bg-surface-900 border border-white/10">
-                {url.match(/\.(mp4|webm|ogg)$/i) ? (
-                  <video src={url} className="w-full h-full object-cover" autoPlay muted loop />
+                {url.match(/\.(mp4|webm|ogg|quicktime|mov)$/i) ? (
+                  <video src={optimizeCloudinaryUrl(url, 'video')} className="w-full h-full object-cover" autoPlay muted loop />
                 ) : (
-                  <img src={url} className="w-full h-full object-cover" alt="" />
+                  <img src={optimizeCloudinaryUrl(url, 'image')} className="w-full h-full object-cover" alt="" />
                 )}
                 <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm gap-2">
                   <button onClick={() => window.open(url, '_blank')} className="p-2 bg-white/10 rounded-full text-white hover:bg-white/20"><ImageIcon className="w-4 h-4" /></button>

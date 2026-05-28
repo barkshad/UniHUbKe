@@ -1,9 +1,10 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { motion, useMotionTemplate, useMotionValue, animate } from 'motion/react';
 import { Link } from 'react-router-dom';
-import { MapPin, Building, PlayCircle, Eye, Star } from 'lucide-react';
+import { MapPin, Building, PlayCircle, Star } from 'lucide-react';
 import { Property } from '../types';
 import { cn, formatCurrency } from '../lib/utils';
+import { optimizeCloudinaryUrl, getCloudinaryPosterNode } from '../lib/optimizeMedia';
 
 interface ListingCardProps {
   property: Property;
@@ -17,6 +18,8 @@ export const ListingCard: React.FC<ListingCardProps> = ({ property, index = 0, o
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const [isMediaLoaded, setIsMediaLoaded] = useState(false);
+  const [mediaError, setMediaError] = useState(false);
   
   // Mouse position for dynamic lighting
   const mouseX = useMotionValue(0);
@@ -26,13 +29,24 @@ export const ListingCard: React.FC<ListingCardProps> = ({ property, index = 0, o
   useEffect(() => {
     if (!videoRef.current) return;
     
+    // Attempt preload for video if not hovered yet
+    videoRef.current.load();
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            // Autoplay when visible and mostly centered
-            videoRef.current?.play().catch(() => {});
-            setIsPlaying(true);
+            // Autoplay when visible and mostly centered.
+            // Using a timeout prevents play() / pause() race condition errors if users scroll fast
+            const playPromise = videoRef.current?.play();
+            if (playPromise !== undefined) {
+              playPromise.then(() => {
+                setIsPlaying(true);
+              }).catch(() => {
+                // Autoplay may be blocked by browser policies
+                setIsPlaying(false);
+              });
+            }
           } else {
             videoRef.current?.pause();
             setIsPlaying(false);
@@ -47,10 +61,10 @@ export const ListingCard: React.FC<ListingCardProps> = ({ property, index = 0, o
     return () => {
       if (videoRef.current) observer.unobserve(videoRef.current);
     };
-  }, []);
+  }, [mediaItem]);
 
   function handleMouseMove({ currentTarget, clientX, clientY }: React.MouseEvent) {
-    const { left, top, width, height } = currentTarget.getBoundingClientRect();
+    const { left, top } = currentTarget.getBoundingClientRect();
     const x = clientX - left;
     const y = clientY - top;
     
@@ -58,6 +72,9 @@ export const ListingCard: React.FC<ListingCardProps> = ({ property, index = 0, o
     animate(mouseX, x, { duration: 0.15 });
     animate(mouseY, y, { duration: 0.15 });
   }
+
+  const optimizedUrl = mediaItem ? optimizeCloudinaryUrl(mediaItem.secure_url, mediaItem.resource_type) : '';
+  const posterUrl = mediaItem ? getCloudinaryPosterNode(mediaItem.secure_url) : '';
 
   return (
     <motion.div
@@ -67,7 +84,7 @@ export const ListingCard: React.FC<ListingCardProps> = ({ property, index = 0, o
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.8, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
       className="group relative"
-      onMouseEnter={(e) => {
+      onMouseEnter={() => {
         setIsHovered(true);
         if (onMouseEnter) onMouseEnter();
       }}
@@ -92,26 +109,56 @@ export const ListingCard: React.FC<ListingCardProps> = ({ property, index = 0, o
           />
 
           <div className="relative h-64 sm:h-72 rounded-[1.5rem] overflow-hidden mb-5 bg-surface-900 border border-white/5 group-hover:shadow-inner">
-            {mediaItem ? (
+            {!isMediaLoaded && mediaItem && !mediaError && (
+               <div className="absolute inset-0 flex items-center justify-center bg-surface-800 animate-pulse">
+                 <Building className="w-8 h-8 text-white/5" />
+               </div>
+            )}
+            
+            {mediaItem && !mediaError ? (
               <>
                 {mediaItem.resource_type === 'video' ? (
                   <video 
-                    ref={videoRef}
-                    src={mediaItem.secure_url} 
+                    ref={(el) => {
+                      // Attach to both the local ref and check readyState
+                      // Assign inner ref for IntersectionObserver
+                      if (el) {
+                        (videoRef as any).current = el;
+                        if (el.readyState >= 2) {
+                          setIsMediaLoaded(true);
+                        }
+                      }
+                    }}
+                    src={optimizedUrl} 
+                    poster={posterUrl}
+                    onLoadedData={() => setIsMediaLoaded(true)}
+                    onError={() => setMediaError(true)}
                     className={cn(
                       "w-full h-full object-cover transition-all duration-1000 transform origin-center",
                       isHovered ? "scale-110" : "scale-100",
-                      isPlaying ? "opacity-100" : "opacity-80 object-center"
+                      isPlaying ? "opacity-100" : "opacity-80 object-center",
+                      isMediaLoaded ? "opacity-100" : "opacity-0"
                     )}
                     muted 
                     loop 
                     playsInline
+                    preload="metadata"
                   />
                 ) : (
                   <img 
-                    src={mediaItem.secure_url} 
+                    src={optimizedUrl} 
                     alt={property.title}
-                    className="w-full h-full object-cover transition-all duration-1000 group-hover:scale-110 will-change-transform"
+                    onLoad={() => setIsMediaLoaded(true)}
+                    onError={() => setMediaError(true)}
+                    ref={(img) => {
+                      if (img && img.complete) {
+                        setIsMediaLoaded(true);
+                      }
+                    }}
+                    className={cn(
+                      "w-full h-full object-cover transition-all duration-1000 transform origin-center group-hover:scale-110 will-change-transform",
+                      isMediaLoaded ? "opacity-100" : "opacity-0"
+                    )}
                     loading="lazy"
                   />
                 )}

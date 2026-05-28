@@ -123,8 +123,8 @@ export async function seedData() {
   // Settings
   const settingsRef = doc(db, 'settings', 'general');
   batch.set(settingsRef, {
-    heroTitle: "Find your perfect student home",
-    heroSubtitle: "Verified properties around JKUAT",
+    heroTitle: "Find your perfect home",
+    heroSubtitle: "Verified properties for everyone",
     ctaText: "Browse Properties",
     featuredProperties: []
   });
@@ -155,7 +155,7 @@ export async function pushMockListingsLive() {
   if (agentSnapshot.empty) {
     const newAgentRef = doc(agentsRef);
     batch.set(newAgentRef, {
-      name: "Trusted Campus Agent",
+      name: "Trusted Real Estate Agent",
       phone: "+254712345678",
       whatsappNumber: "+254712345678",
       profilePhotoURL: "https://api.dicebear.com/7.x/avataaars/svg?seed=Agent",
@@ -185,28 +185,28 @@ export async function pushMockListingsLive() {
   ];
 
   const mockData = [
-    { title: "Sunrise Bedsitters", location: "Gate C, Juja", price: 6500, type: "bedsit" },
-    { title: "Elite Single Rooms", location: "Gate B, Juja", price: 4000, type: "single" },
-    { title: "The Haven One Bedroom", location: "Oasis, Juja", price: 12000, type: "one" },
-    { title: "Greenfield Apartments", location: "Gate A, Juja", price: 18000, type: "two" },
-    { title: "Ocean View Bedsits", location: "Seward, Juja", price: 7000, type: "bedsit" },
-    { title: "Campus Edge Singles", location: "Gate C, Juja", price: 4500, type: "single" },
-    { title: "Harmony One Bedroom", location: "Gachororo, Juja", price: 11000, type: "one" },
-    { title: "Juja Square Bedsitters", location: "Juja Town", price: 6000, type: "bedsit" },
-    { title: "Scholar's Retreat", location: "Gate C, Juja", price: 5000, type: "single" },
-    { title: "Nova Apartments", location: "Highpoint, Juja", price: 13500, type: "one" },
-    { title: "Prestige Bedsits", location: "Gate B, Juja", price: 8000, type: "bedsit" },
-    { title: "Apex Single Units", location: "JKUAT Main, Juja", price: 4800, type: "single" },
-    { title: "The Loft One Beds", location: "Gate A, Juja", price: 15000, type: "one" },
-    { title: "Zenith Rooms", location: "Oasis, Juja", price: 7500, type: "bedsit" },
-    { title: "Eco-Living Singles", location: "Gachororo, Juja", price: 4200, type: "single" },
-    { title: "Pinnacle Studios", location: "Gate C, Juja", price: 8500, type: "bedsit" },
-    { title: "Crest View Apartments", location: "Juja Town", price: 14000, type: "one" },
-    { title: "Urban Suites", location: "Highpoint, Juja", price: 20000, type: "two" },
-    { title: "Classic Bedsitters", location: "Gate B, Juja", price: 6800, type: "bedsit" },
-    { title: "Main Campus Singles", location: "Gate A, Juja", price: 5500, type: "single" },
-    { title: "Galaxy One Bedroom", location: "Gate C, Juja", price: 12500, type: "one" },
-    { title: "Oasis Retreat Bedsits", location: "Oasis, Juja", price: 7200, type: "bedsit" }
+    { title: "Sunrise Studios", location: "Downtown Heights", price: 6500, type: "bedsit" },
+    { title: "Elite Single Rooms", location: "Westside Park", price: 4000, type: "single" },
+    { title: "The Haven One Bedroom", location: "Oasis Suburb", price: 12000, type: "one" },
+    { title: "Greenfield Apartments", location: "Eastgate", price: 18000, type: "two" },
+    { title: "Ocean View Studios", location: "Bay Area", price: 7000, type: "bedsit" },
+    { title: "City Edge Singles", location: "Metro Link", price: 4500, type: "single" },
+    { title: "Harmony One Bedroom", location: "Ridgeways", price: 11000, type: "one" },
+    { title: "Central Square Apartments", location: "City Center", price: 6000, type: "bedsit" },
+    { title: "Urban Retreat", location: "North Park", price: 5000, type: "single" },
+    { title: "Nova Apartments", location: "Highpoint", price: 13500, type: "one" },
+    { title: "Prestige Studios", location: "Westgate", price: 8000, type: "bedsit" },
+    { title: "Apex Single Units", location: "Main Street", price: 4800, type: "single" },
+    { title: "The Loft One Beds", location: "Artisan District", price: 15000, type: "one" },
+    { title: "Zenith Rooms", location: "Oasis Suburb", price: 7500, type: "bedsit" },
+    { title: "Eco-Living Singles", location: "Green Valley", price: 4200, type: "single" },
+    { title: "Pinnacle Studios", location: "Metro Link", price: 8500, type: "bedsit" },
+    { title: "Crest View Apartments", location: "City Center", price: 14000, type: "one" },
+    { title: "Urban Suites", location: "Highpoint", price: 20000, type: "two" },
+    { title: "Classic Studios", location: "Westside Park", price: 6800, type: "bedsit" },
+    { title: "Downtown Singles", location: "Eastgate", price: 5500, type: "single" },
+    { title: "Galaxy One Bedroom", location: "Metro Link", price: 12500, type: "one" },
+    { title: "Oasis Retreat Studios", location: "Oasis Suburb", price: 7200, type: "bedsit" }
   ];
 
   mockData.forEach((item, idx) => {
@@ -214,7 +214,7 @@ export async function pushMockListingsLive() {
      const img = images[idx % images.length];
      batch.set(propRef, {
         title: item.title,
-        description: "Premium student accommodation closely located to the campus. Features ample security, 24/7 water supply, reliable Wi-Fi, and a serene environment perfect for studying.",
+        description: "Premium accommodation with excellent amenities. Features ample security, reliable water supply, fast Wi-Fi, and a serene environment perfect for comfortable living.",
         price: item.price,
         deposit: item.price,
         location: item.location,

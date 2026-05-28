@@ -6,6 +6,7 @@ import { getProperties, getSiteSettings } from '../../services/firestore';
 import { Property, SiteSettings } from '../../types';
 import { ListingCard } from '../../components/ListingCard';
 import { Link, useNavigate } from 'react-router-dom';
+import { optimizeCloudinaryUrl } from '../../lib/optimizeMedia';
 
 export const Home = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -54,10 +55,10 @@ export const Home = () => {
         <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
            {settings?.heroImage && (
              <div className="absolute inset-0 w-full h-full opacity-40">
-                {settings.heroImage.match(/\.(mp4|webm|ogg)$/i) ? (
-                  <video src={settings.heroImage} className="w-full h-full object-cover" autoPlay muted loop playsInline />
+                {settings.heroImage.match(/\.(mp4|webm|ogg|mov|quicktime)$/i) ? (
+                  <video src={optimizeCloudinaryUrl(settings.heroImage, 'video')} className="w-full h-full object-cover" autoPlay muted loop playsInline />
                 ) : (
-                  <img src={settings.heroImage} className="w-full h-full object-cover" alt="" />
+                  <img src={optimizeCloudinaryUrl(settings.heroImage, 'image')} className="w-full h-full object-cover" alt="" />
                 )}
              </div>
            )}
