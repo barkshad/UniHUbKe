@@ -27,6 +27,7 @@ import { AuthProvider } from './context/AuthContext';
 import { Toaster } from 'react-hot-toast';
 import { useEffect } from 'react';
 import Lenis from '@studio-freight/lenis';
+import { Analytics } from '@vercel/analytics/react';
 
 export default function App() {
   useEffect(() => {
@@ -83,6 +84,7 @@ export default function App() {
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </Router>
+      <Analytics />
     </AuthProvider>
   );
 }
