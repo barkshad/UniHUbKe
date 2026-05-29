@@ -100,6 +100,12 @@ export interface ThemeConfig {
   animationSpeed: string;
 }
 
+export interface TeamMember {
+  name: string;
+  role: string;
+  photoUrl: string;
+}
+
 export interface SiteSettings {
   heroTitle: string;
   heroSubtitle: string;
@@ -110,4 +116,5 @@ export interface SiteSettings {
   features?: {
     enableBlog: boolean;
   };
+  teamMembers?: TeamMember[];
 }

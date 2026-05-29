@@ -1,9 +1,31 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
-import { ShieldCheck, TrendingUp, Search, Headphones, MapPin, Building, MoveRight } from 'lucide-react';
+import { ShieldCheck, TrendingUp, Search, Headphones, MapPin, Building, MoveRight, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { getSiteSettings } from '../../services/firestore';
+import { TeamMember } from '../../types';
 
 export const AboutPage = () => {
+  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([
+    { name: 'Sarah Wanjiku', role: 'Founder & CEO', photoUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah&backgroundColor=transparent' },
+    { name: 'David Ochieng', role: 'Head of Product', photoUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=David&backgroundColor=transparent' },
+    { name: 'Mercy Kiprono', role: 'Community Manager', photoUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Mercy&backgroundColor=transparent' },
+    { name: 'James Mutua', role: 'Lead Developer', photoUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=James&backgroundColor=transparent' }
+  ]);
+
+  useEffect(() => {
+    const fetchTeam = async () => {
+      try {
+        const settings = await getSiteSettings();
+        if (settings?.teamMembers && settings.teamMembers.length > 0) {
+          setTeamMembers(settings.teamMembers);
+        }
+      } catch (err) {
+        console.error("Failed to load team members:", err);
+      }
+    };
+    fetchTeam();
+  }, []);
   return (
     <div className="flex-1">
       {/* Hero Section */}
@@ -185,12 +207,7 @@ export const AboutPage = () => {
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {[
-              { name: 'Sarah Wanjiku', role: 'Founder & CEO', seed: 'Sarah' },
-              { name: 'David Ochieng', role: 'Head of Product', seed: 'David' },
-              { name: 'Mercy Kiprono', role: 'Community Manager', seed: 'Mercy' },
-              { name: 'James Mutua', role: 'Lead Developer', seed: 'James' }
-            ].map((member, i) => (
+            {teamMembers.map((member, i) => (
               <motion.div 
                 key={i}
                 initial={{ opacity: 0, y: 20 }}
@@ -199,12 +216,18 @@ export const AboutPage = () => {
                 transition={{ delay: i * 0.1 }}
                 className="group"
               >
-                <div className="aspect-square rounded-[2rem] overflow-hidden bg-surface-800 mb-6 border border-white/5">
-                  <img 
-                    src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${member.seed}&backgroundColor=transparent`} 
-                    alt={member.name} 
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
-                  />
+                <div className="aspect-square rounded-[2rem] overflow-hidden bg-surface-800 mb-6 border border-white/5 relative">
+                  {member.photoUrl ? (
+                     <img 
+                       src={member.photoUrl} 
+                       alt={member.name} 
+                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                     />
+                  ) : (
+                     <div className="w-full h-full flex items-center justify-center bg-zinc-900 group-hover:scale-105 transition-transform duration-500">
+                        <Users className="w-12 h-12 text-zinc-700" />
+                     </div>
+                  )}
                 </div>
                 <h4 className="text-xl font-medium text-white">{member.name}</h4>
                 <p className="text-white/50">{member.role}</p>
