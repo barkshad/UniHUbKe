@@ -10,6 +10,8 @@ import { ListingsPage } from './pages/public/ListingsPage';
 import { PropertyDetailsPage } from './pages/public/PropertyDetailsPage';
 import { NotFoundPage } from './pages/public/NotFoundPage';
 import { LegalPage } from './pages/public/LegalPage';
+import { AboutPage } from './pages/public/AboutPage';
+import { ContactPage } from './pages/public/ContactPage';
 import { PublicLayout } from './components/layouts/PublicLayout';
 
 import { AdminLoginPage } from './pages/admin/AdminLoginPage';
@@ -62,6 +64,8 @@ export default function App() {
             <Route index element={<Home />} />
             <Route path="listings" element={<ListingsPage />} />
             <Route path="properties/:id" element={<PropertyDetailsPage />} />
+            <Route path="about" element={<AboutPage />} />
+            <Route path="contact" element={<ContactPage />} />
             <Route path="privacy" element={<LegalPage type="privacy" />} />
             <Route path="terms" element={<LegalPage type="terms" />} />
             <Route path="*" element={<NotFoundPage />} />

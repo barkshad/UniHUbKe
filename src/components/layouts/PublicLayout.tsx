@@ -111,7 +111,8 @@ export const PublicLayout = () => {
               <h4 className="font-medium text-white mb-4">Company</h4>
               <ul className="space-y-3">
                 <li><Link to="/" className="text-sm text-white/50 hover:text-white transition-colors">Home</Link></li>
-                <li><a href="mailto:hello@unihub.test" className="text-sm text-white/50 hover:text-white transition-colors">Contact</a></li>
+                <li><Link to="/about" className="text-sm text-white/50 hover:text-white transition-colors">About Us</Link></li>
+                <li><Link to="/contact" className="text-sm text-white/50 hover:text-white transition-colors">Contact</Link></li>
                 <li><Link to="/privacy" className="text-sm text-white/50 hover:text-white transition-colors">Privacy Policy</Link></li>
                 <li><Link to="/terms" className="text-sm text-white/50 hover:text-white transition-colors">Terms of Service</Link></li>
               </ul>

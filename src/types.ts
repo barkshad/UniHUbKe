@@ -7,7 +7,7 @@ export interface University {
   popularKeywords?: string[];
 }
 
-export type UserRole = 'student' | 'landlord' | 'admin';
+export type UserRole = 'tenant' | 'landlord' | 'admin';
 
 export interface User {
   id: string;

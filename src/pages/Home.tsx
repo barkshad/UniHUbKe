@@ -103,7 +103,7 @@ export const Home = () => {
               className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 mb-8 backdrop-blur-md"
             >
               <span className="w-2 h-2 rounded-full bg-white animate-pulse"></span>
-              <span className="text-sm font-medium text-white/80">Premium Student Housing</span>
+              <span className="text-sm font-medium text-white/80">Premium Housing</span>
             </motion.div>
 
             <motion.h1
@@ -118,7 +118,7 @@ export const Home = () => {
               }}
               className="text-5xl md:text-7xl lg:text-8xl font-display font-medium tracking-tight text-balance leading-[1.1] mb-8"
             >
-              {['Find', 'trusted', 'student', 'housing', 'near'].map((word, i) => (
+              {['Find', 'trusted', 'housing', 'near', 'your'].map((word, i) => (
                 <React.Fragment key={i}>
                   <motion.span 
                     variants={{
@@ -129,7 +129,7 @@ export const Home = () => {
                   >
                     {word}
                   </motion.span>
-                  {word === 'student' && <br className="hidden md:block"/>}
+                  {word === 'housing' && <br className="hidden md:block"/>}
                 </React.Fragment>
               ))}
               <motion.span 
@@ -149,7 +149,7 @@ export const Home = () => {
               transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
               className="text-lg md:text-xl text-white/50 max-w-2xl mb-12 text-balance leading-relaxed"
             >
-              Verified rentals, direct landlord contacts, and student-friendly housing — all in one beautifully designed place. No account required to browse.
+              Verified rentals, direct landlord contacts, and premium housing — all in one beautifully designed place. No account required to browse.
             </motion.p>
 
             <motion.div
@@ -206,7 +206,7 @@ export const Home = () => {
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             className="text-center max-w-3xl mx-auto mb-20"
           >
-            <h2 className="text-3xl md:text-5xl font-display font-medium mb-6">Designed for Students.</h2>
+            <h2 className="text-3xl md:text-5xl font-display font-medium mb-6">Designed for You.</h2>
             <p className="text-white/50 text-lg">We stripped away the noise to give you exactly what you need to find your next home.</p>
           </motion.div>
 
