@@ -91,10 +91,23 @@ export interface Category {
   order: number;
 }
 
+export interface ThemeConfig {
+  primaryColor: string;
+  backgroundColor: string;
+  surfaceColor: string;
+  borderRadius: string;
+  fontFamily: string;
+  animationSpeed: string;
+}
+
 export interface SiteSettings {
   heroTitle: string;
   heroSubtitle: string;
   heroImage?: string;
   ctaText: string;
   featuredProperties: string[];
+  theme?: ThemeConfig;
+  features?: {
+    enableBlog: boolean;
+  };
 }

@@ -5,6 +5,10 @@ import { MapPin, Building, PlayCircle, Star } from 'lucide-react';
 import { Property } from '../types';
 import { cn, formatCurrency } from '../lib/utils';
 import { optimizeCloudinaryUrl, getCloudinaryPosterNode } from '../lib/optimizeMedia';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 interface ListingCardProps {
   property: Property;
@@ -19,11 +23,38 @@ export const ListingCard: React.FC<ListingCardProps> = ({ property, index = 0, o
   const [isPlaying, setIsPlaying] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [isMediaLoaded, setIsMediaLoaded] = useState(false);
-  const [mediaError, setMediaError] = useState(false);
+  const mediaErrorState = useState(false);
+  const [mediaError, setMediaError] = mediaErrorState;
+  const cardRef = useRef<HTMLDivElement>(null);
   
   // Mouse position for dynamic lighting
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
+
+  // GSAP Entrance Animation
+  useEffect(() => {
+    if (!cardRef.current) return;
+    
+    const ctx = gsap.context(() => {
+      gsap.fromTo(cardRef.current, 
+        { opacity: 0, y: 30 },
+        {
+          opacity: 1, 
+          y: 0, 
+          duration: 0.8,
+          ease: "power3.out",
+          delay: (index % 10) * 0.1,
+          scrollTrigger: {
+            trigger: cardRef.current,
+            start: "top 90%",
+            toggleActions: "play none none none"
+          }
+        }
+      );
+    }, cardRef);
+
+    return () => ctx.revert();
+  }, [index]);
 
   // Intersection observer for smart autoplay
   useEffect(() => {
@@ -77,23 +108,22 @@ export const ListingCard: React.FC<ListingCardProps> = ({ property, index = 0, o
   const posterUrl = mediaItem ? getCloudinaryPosterNode(mediaItem.secure_url) : '';
 
   return (
-    <motion.div
-      layout
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, scale: 0.95 }}
-      transition={{ duration: 0.8, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
-      className="group relative"
-      onMouseEnter={() => {
-        setIsHovered(true);
-        if (onMouseEnter) onMouseEnter();
-      }}
-      onMouseLeave={() => {
-        setIsHovered(false);
-        if (onMouseLeave) onMouseLeave();
-      }}
-      onMouseMove={handleMouseMove}
-    >
+    <div ref={cardRef} style={{ opacity: 0, transform: 'translateY(30px)' }}>
+      <motion.div
+        layout
+        exit={{ opacity: 0, scale: 0.95 }}
+        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+        className="group relative h-full w-full"
+        onMouseEnter={() => {
+          setIsHovered(true);
+          if (onMouseEnter) onMouseEnter();
+        }}
+        onMouseLeave={() => {
+          setIsHovered(false);
+          if (onMouseLeave) onMouseLeave();
+        }}
+        onMouseMove={handleMouseMove}
+      >
       {/* Background ambient glow matching glass shine */}
       <div className="absolute -inset-0.5 bg-gradient-to-tr from-white/0 via-white/10 to-white/0 rounded-[2rem] opacity-0 group-hover:opacity-100 blur-xl transition-all duration-700 pointer-events-none" />
 
@@ -224,6 +254,7 @@ export const ListingCard: React.FC<ListingCardProps> = ({ property, index = 0, o
         </div>
       </Link>
     </motion.div>
+    </div>
   );
 };
 

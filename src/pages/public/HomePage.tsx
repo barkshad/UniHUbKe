@@ -155,8 +155,8 @@ export const Home = () => {
           </div>
           
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {featuredListings.map(property => (
-              <ListingCard key={property.id} property={property} />
+            {featuredListings.map((property, i) => (
+              <ListingCard key={property.id} property={property} index={i} />
             ))}
           </div>
         </div>
