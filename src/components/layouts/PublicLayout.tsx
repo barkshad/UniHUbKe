@@ -46,6 +46,9 @@ export const PublicLayout = () => {
             <Link to="/listings" className="text-sm font-medium text-white/70 hover:text-white transition-colors">
               Find Housing
             </Link>
+            <Link to="/hostels" className="text-sm font-medium px-3 py-1 bg-white/5 border border-white/10 rounded-full text-white/90 hover:bg-white/10 hover:text-white transition-colors">
+              Official Hostels
+            </Link>
           </nav>
 
           {/* Mobile Menu Toggle */}

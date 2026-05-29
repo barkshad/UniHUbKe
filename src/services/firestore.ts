@@ -145,6 +145,7 @@ export async function seedData() {
 }
 
 export async function pushMockListingsLive() {
+  // Existing implementation omitted for brevity, let's keep it entirely unmodified
   const batch = writeBatch(db);
 
   // 1. Check or Create Agent
@@ -235,3 +236,89 @@ export async function pushMockListingsLive() {
 
   await batch.commit();
 }
+
+// -----------------------------------------
+// NEW DOMAIN: UNIVERSITIES & HOSTELS
+// -----------------------------------------
+
+import { University, Hostel, HostelRoom } from '../types';
+
+export async function getUniversities(): Promise<University[]> {
+  const q = query(collection(db, 'universities'), orderBy('createdAt', 'desc'));
+  const snap = await getDocs(q);
+  return snap.docs.map(d => ({ id: d.id, ...d.data() } as University));
+}
+
+export async function getUniversity(id: string): Promise<University | null> {
+  const snap = await getDoc(doc(db, 'universities', id));
+  return snap.exists() ? ({ id: snap.id, ...snap.data() } as University) : null;
+}
+
+export async function createUniversity(data: Omit<University, 'id' | 'createdAt' | 'updatedAt'>) {
+  return await addDoc(collection(db, 'universities'), {
+    ...data,
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp()
+  });
+}
+
+export async function getHostels(universityId?: string): Promise<Hostel[]> {
+  let qVar = query(collection(db, 'hostels'), orderBy('createdAt', 'desc'));
+  if (universityId) {
+    qVar = query(collection(db, 'hostels'), where('universityId', '==', universityId));
+  }
+  const snap = await getDocs(qVar);
+  let res = snap.docs.map(d => ({ id: d.id, ...d.data() } as Hostel));
+  if (universityId) res = res.sort((a,b) => (b.createdAt?.toMillis()||0) - (a.createdAt?.toMillis()||0));
+  return res;
+}
+
+export async function getHostel(id: string): Promise<Hostel | null> {
+  const snap = await getDoc(doc(db, 'hostels', id));
+  return snap.exists() ? ({ id: snap.id, ...snap.data() } as Hostel) : null;
+}
+
+export async function getHostelRooms(hostelId: string): Promise<HostelRoom[]> {
+  const qVar = query(collection(db, 'hostel_rooms'), where('hostelId', '==', hostelId));
+  const snap = await getDocs(qVar);
+  return snap.docs.map(d => ({ id: d.id, ...d.data() } as HostelRoom));
+}
+
+// -----------------------------------------
+// NEW DOMAIN: APARTMENTS & ROOMS
+// -----------------------------------------
+
+import { Apartment, Room } from '../types';
+
+export async function getApartments(status?: string): Promise<Apartment[]> {
+  const ref = collection(db, 'apartments');
+  let qVar = query(ref, orderBy('createdAt', 'desc'));
+  if (status) {
+    qVar = query(ref, where('status', '==', status));
+  }
+  const snap = await getDocs(qVar);
+  let res = snap.docs.map(d => ({ id: d.id, ...d.data() } as Apartment));
+  if (status) res = res.sort((a,b) => (b.createdAt?.toMillis()||0) - (a.createdAt?.toMillis()||0));
+  return res;
+}
+
+export async function getApartment(id: string): Promise<Apartment | null> {
+  const snap = await getDoc(doc(db, 'apartments', id));
+  return snap.exists() ? ({ id: snap.id, ...snap.data() } as Apartment) : null;
+}
+
+export async function getRooms(apartmentId?: string): Promise<Room[]> {
+  const ref = collection(db, 'rooms');
+  let qVar = query(ref, orderBy('createdAt', 'desc'));
+  if (apartmentId) {
+    qVar = query(ref, where('apartmentId', '==', apartmentId));
+  }
+  const snap = await getDocs(qVar);
+  return snap.docs.map(d => ({ id: d.id, ...d.data() } as Room));
+}
+
+export async function getRoom(id: string): Promise<Room | null> {
+  const snap = await getDoc(doc(db, 'rooms', id));
+  return snap.exists() ? ({ id: snap.id, ...snap.data() } as Room) : null;
+}
+

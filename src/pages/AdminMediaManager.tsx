@@ -25,7 +25,7 @@ export const AdminMediaManager = () => {
     try {
       const files = Array.from(e.target.files);
       const { uploadToCloudinary } = await import('../lib/cloudinary');
-      const uploadedUrls = await Promise.all(files.map(f => uploadToCloudinary(f)));
+      const uploadedUrls = await Promise.all(files.map((f: any) => uploadToCloudinary(f as File)));
       
       const newMedia = [...heroMedia, ...uploadedUrls];
       await setDoc(doc(db, 'cms', 'hero'), { media: newMedia }, { merge: true });

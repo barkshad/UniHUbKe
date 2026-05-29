@@ -31,7 +31,7 @@ export const LandlordDashboard = () => {
     try {
       const { uploadToCloudinary } = await import('../lib/cloudinary');
       const uploadedUrls = await Promise.all(
-        files.map(file => uploadToCloudinary(file))
+        files.map((file: any) => uploadToCloudinary(file as File))
       );
       setFormData(prev => ({ ...prev, images: [...prev.images, ...uploadedUrls] }));
     } catch (err: any) {

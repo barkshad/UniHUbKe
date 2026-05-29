@@ -60,8 +60,8 @@ export const AdminPropertyForm = () => {
     let completedFiles = 0;
     
     try {
-        const uploadPromises = Array.from(files).map(async (f) => {
-           const res = await uploadToStorage(f, folder, (progress) => {
+        const uploadPromises = Array.from(files).map(async (f: any) => {
+           const res = await uploadToStorage(f as File, folder, (progress) => {
               setUploadProgress(Math.floor(((completedFiles * 100) + progress) / files.length));
            });
            completedFiles++;
