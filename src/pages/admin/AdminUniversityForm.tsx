@@ -9,9 +9,10 @@ import toast from 'react-hot-toast';
 export const AdminUniversityForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(!!id);
+  const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploadingLogo, setUploadingLogo] = useState(false);
+  const [hostels, setHostels] = useState<any[]>([]);
 
   const [formData, setFormData] = useState<Partial<University>>({
     name: '',
@@ -30,16 +31,24 @@ export const AdminUniversityForm = () => {
   });
 
   useEffect(() => {
-    if (id) {
-      getUniversity(id).then(data => {
-        if (data) setFormData({ ...data, metadata: data.metadata || { founded_year: 0, student_count: 0 } });
-        setLoading(false);
-      }).catch(err => {
+    const fetchUniAndHostels = async () => {
+      try {
+        if (id && id !== 'new') {
+          const data = await getUniversity(id);
+          if (data) setFormData({ ...data, metadata: data.metadata || { founded_year: 0, student_count: 0 } });
+          
+          import('../../services/firestore').then(({ getHostels }) => {
+             getHostels(id).then(hData => setHostels(hData));
+          });
+        }
+      } catch (err) {
         toast.error('Failed to load university details');
-        navigate('/admin/universities');
-      });
-    }
-  }, [id, navigate]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchUniAndHostels();
+  }, [id]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -239,6 +248,54 @@ export const AdminUniversityForm = () => {
 
         </form>
       </div>
+
+      {id && id !== 'new' && (
+        <div className="mt-12 bg-zinc-900 border border-zinc-800 rounded-xl p-6">
+          <div className="flex justify-between items-center mb-6">
+            <div>
+              <h2 className="text-xl font-display font-medium text-white mb-1">University Hostels</h2>
+              <p className="text-sm text-zinc-400">Manage hostels associated with this university.</p>
+            </div>
+            <Link 
+              to={`/admin/universities/${id}/hostels/new`} 
+              className="bg-zinc-800 text-white px-4 py-2 rounded-lg font-medium hover:bg-zinc-700 transition-colors text-sm"
+            >
+              Add Hostel
+            </Link>
+          </div>
+
+          {hostels.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {hostels.map(hostel => (
+                <div key={hostel.id} className="border border-zinc-800 bg-zinc-950 rounded-lg p-4 flex gap-4">
+                   <div className="w-16 h-16 bg-zinc-800 rounded-lg overflow-hidden flex-shrink-0">
+                      {hostel.images && hostel.images[0] ? (
+                         <img src={hostel.images[0].secure_url || hostel.images[0].url} alt="hostel" className="w-full h-full object-cover" />
+                      ) : (
+                         <div className="w-full h-full flex items-center justify-center">
+                            <ImageIcon className="w-5 h-5 text-zinc-600" />
+                         </div>
+                      )}
+                   </div>
+                   <div className="flex-1 min-w-0">
+                      <h4 className="text-white font-medium truncate">{hostel.name}</h4>
+                      <p className="text-xs text-zinc-400 truncate mb-2">{hostel.location}</p>
+                      <div className="flex gap-2">
+                        <Link to={`/admin/universities/${id}/hostels/${hostel.id}`} className="text-xs text-brand-500 hover:underline">Edit Info</Link>
+                        <span className="text-zinc-600 text-xs">•</span>
+                        <Link to={`/admin/hostels/${hostel.id}/rooms`} className="text-xs text-brand-500 hover:underline">Manage Rooms</Link>
+                      </div>
+                   </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-8 border-2 border-dashed border-zinc-800 rounded-lg">
+               <p className="text-zinc-400">No hostels added for this university yet.</p>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };

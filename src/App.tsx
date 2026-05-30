@@ -121,6 +121,8 @@ export default function App() {
             <Route path="hostels" element={<AdminHostelsPage />} />
             <Route path="hostels/new" element={<AdminHostelForm />} />
             <Route path="hostels/:id" element={<AdminHostelForm />} />
+            <Route path="universities/:universityId/hostels/new" element={<AdminHostelForm />} />
+            <Route path="universities/:universityId/hostels/:id" element={<AdminHostelForm />} />
             <Route path="hostels/:id/rooms" element={<AdminHostelRoomsPage />} />
             <Route path="hostels/:id/rooms/new" element={<AdminHostelRoomForm />} />
             <Route path="hostels/:id/rooms/:roomId" element={<AdminHostelRoomForm />} />

@@ -6,7 +6,7 @@ import { getHostel, createHostel, updateHostel, getUniversities } from '../../se
 import toast from 'react-hot-toast';
 
 export const AdminHostelForm = () => {
-  const { id } = useParams();
+  const { id, universityId } = useParams();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -15,7 +15,7 @@ export const AdminHostelForm = () => {
 
   const [formData, setFormData] = useState<Partial<Hostel>>({
     name: '',
-    universityId: '',
+    universityId: universityId || '',
     location: '',
     description: '',
     hostel_type: 'mixed',
@@ -35,20 +35,23 @@ export const AdminHostelForm = () => {
         const unis = await getUniversities();
         setUniversities(unis);
         
-        if (id) {
+        if (id && id !== 'new') {
           const data = await getHostel(id);
           if (data) setFormData(data);
-        } else if (unis.length > 0) {
+        } else if (universityId) {
+          setFormData(prev => ({ ...prev, universityId: universityId }));
+        } else if (unis.length > 0 && !formData.universityId) {
            setFormData(prev => ({ ...prev, universityId: unis[0].id }));
         }
+      } catch (err: any) {
+        console.error('Failed to load data:', err);
+        toast.error('Failed to load initial data');
+      } finally {
         setLoading(false);
-      } catch (err) {
-        toast.error('Failed to load data');
-        navigate('/admin/hostels');
       }
     };
     fetchData();
-  }, [id, navigate]);
+  }, [id, universityId]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -59,14 +62,14 @@ export const AdminHostelForm = () => {
 
     setSaving(true);
     try {
-      if (id) {
+      if (id && id !== 'new') {
         await updateHostel(id, formData);
         toast.success('Hostel updated successfully');
       } else {
         await createHostel(formData as any);
         toast.success('Hostel registered successfully');
       }
-      navigate('/admin/hostels');
+      navigate(universityId ? `/admin/universities/${universityId}` : '/admin/hostels');
     } catch (err) {
       toast.error('Failed to save hostel');
     } finally {
@@ -104,13 +107,17 @@ export const AdminHostelForm = () => {
       const uploadPromises = Array.from(files).map((f: any) => uploadToCloudinary(f as File));
       const urls = await Promise.all(uploadPromises);
       
-      const newMediaItems = urls.map((url, i) => ({
-        public_id: `hostel_${Date.now()}_${i}`,
-        secure_url: url,
-        resource_type: 'image' as const,
-        format: 'jpg',
-        order: (formData.images?.length || 0) + i
-      }));
+      const newMediaItems = urls.map((url, i) => {
+        const file = Array.from(files)[i] as File;
+        const isVideo = file.type.startsWith('video');
+        return {
+          public_id: `hostel_${Date.now()}_${i}`,
+          secure_url: url,
+          resource_type: isVideo ? 'video' : 'image',
+          format: isVideo ? 'mp4' : 'jpg',
+          order: (formData.images?.length || 0) + i
+        };
+      });
       
       setFormData(prev => ({
          ...prev,
@@ -128,13 +135,13 @@ export const AdminHostelForm = () => {
 
   return (
     <div className="p-8 max-w-4xl mx-auto">
-      <Link to="/admin/hostels" className="inline-flex items-center gap-2 text-zinc-400 hover:text-white mb-6 transition-colors">
-        <ArrowLeft className="w-4 h-4" /> Back to Hostels
+      <Link to={universityId ? `/admin/universities/${universityId}` : "/admin/hostels"} className="inline-flex items-center gap-2 text-zinc-400 hover:text-white mb-6 transition-colors">
+        <ArrowLeft className="w-4 h-4" /> {universityId ? 'Back to University' : 'Back to Hostels'}
       </Link>
 
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="text-3xl font-display font-medium text-white mb-2">{id ? 'Edit Hostel' : 'Add Official Hostel'}</h1>
+          <h1 className="text-3xl font-display font-medium text-white mb-2">{(id && id !== 'new') ? 'Edit Hostel' : 'Add Official Hostel'}</h1>
           <p className="text-zinc-400">Manage university hostel details, photos, and features.</p>
         </div>
         <button 
@@ -273,7 +280,11 @@ export const AdminHostelForm = () => {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                {(formData.images || []).map((img, i) => (
                   <div key={i} className="aspect-square bg-zinc-950 rounded-lg border border-zinc-800 overflow-hidden relative group">
-                     <img src={img.secure_url} className="w-full h-full object-cover" />
+                     {img.resource_type === 'video' ? (
+                       <video src={img.secure_url} className="w-full h-full object-cover" controls />
+                     ) : (
+                       <img src={img.secure_url} className="w-full h-full object-cover" alt="Media" />
+                     )}
                      <button
                         type="button"
                         onClick={() => {
