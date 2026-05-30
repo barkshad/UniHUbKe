@@ -13,6 +13,7 @@ import { LegalPage } from './pages/public/LegalPage';
 import { AboutPage } from './pages/public/AboutPage';
 import { ContactPage } from './pages/public/ContactPage';
 import { HostelsPage } from './pages/public/HostelsPage';
+import { HostelDetailsPage } from './pages/public/HostelDetailsPage';
 import { PublicLayout } from './components/layouts/PublicLayout';
 
 import { AdminLoginPage } from './pages/admin/AdminLoginPage';
@@ -31,6 +32,8 @@ import { AdminUniversitiesPage } from './pages/admin/AdminUniversitiesPage';
 import { AdminUniversityForm } from './pages/admin/AdminUniversityForm';
 import { AdminHostelsPage } from './pages/admin/AdminHostelsPage';
 import { AdminHostelForm } from './pages/admin/AdminHostelForm';
+import { AdminHostelRoomsPage } from './pages/admin/AdminHostelRoomsPage';
+import { AdminHostelRoomForm } from './pages/admin/AdminHostelRoomForm';
 
 import { AuthProvider } from './context/AuthContext';
 import { getSiteSettings } from './services/firestore';
@@ -97,6 +100,7 @@ export default function App() {
             <Route path="listings" element={<ListingsPage />} />
             <Route path="properties/:id" element={<PropertyDetailsPage />} />
             <Route path="hostels" element={<HostelsPage />} />
+            <Route path="hostels/:id" element={<HostelDetailsPage />} />
             <Route path="about" element={<AboutPage />} />
             <Route path="contact" element={<ContactPage />} />
             <Route path="privacy" element={<LegalPage type="privacy" />} />
@@ -117,6 +121,9 @@ export default function App() {
             <Route path="hostels" element={<AdminHostelsPage />} />
             <Route path="hostels/new" element={<AdminHostelForm />} />
             <Route path="hostels/:id" element={<AdminHostelForm />} />
+            <Route path="hostels/:id/rooms" element={<AdminHostelRoomsPage />} />
+            <Route path="hostels/:id/rooms/new" element={<AdminHostelRoomForm />} />
+            <Route path="hostels/:id/rooms/:roomId" element={<AdminHostelRoomForm />} />
             <Route path="agents" element={<AdminAgentsPage />} />
             <Route path="categories" element={<AdminCategoriesPage />} />
             <Route path="settings" element={<AdminSettingsPage />} />

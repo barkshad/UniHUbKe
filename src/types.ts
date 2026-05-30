@@ -50,20 +50,42 @@ export interface HostelRoom {
   hostelId: string;
   room_number: string;
   bed_number?: string;
-  room_type: 'single' | 'shared_double' | 'shared_quad';
-  price_per_semester: number;
-  price_per_year: number;
-  price_per_month?: number;
-  description: string;
-  features: string[];
-  images: MediaItem[];
-  max_occupants: number;
+  room_type: 'single' | 'shared_double' | 'shared_quad' | 'shared_open';
+  pricing?: {
+    per_month?: number;
+    per_semester?: number;
+    per_year?: number;
+  };
   status: 'available' | 'booked' | 'maintenance' | 'closed';
-  available_from?: Timestamp;
-  available_until?: Timestamp;
-  booking_deadline?: Timestamp;
-  createdAt?: Timestamp;
-  updatedAt?: Timestamp;
+  occupancy?: {
+    current_occupants: number;
+    max_occupants: number;
+    occupancy_percentage: number;
+  };
+  media?: {
+    type: 'video' | 'image';
+    url: string;
+    thumbnail?: string;
+    caption?: string;
+    duration?: number;
+    order: number;
+  }[];
+  amenities?: string[];
+  features?: string[];
+  availability?: {
+    available_from: any;
+    available_until: any;
+    booking_deadline?: any;
+  };
+  current_tenant?: {
+    name: string;
+    student_id: string;
+    admission_date: any;
+    expected_checkout: any;
+  };
+  price_notes?: string;
+  createdAt?: any;
+  updatedAt?: any;
 }
 
 export interface Apartment {
