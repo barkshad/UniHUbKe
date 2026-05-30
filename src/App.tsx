@@ -57,8 +57,12 @@ export default function App() {
           if (settings.theme.fontFamily) root.style.setProperty('--CMS-font-family', `"${settings.theme.fontFamily}", sans-serif`);
           if (settings.theme.borderRadius) root.style.setProperty('--CMS-border-radius', settings.theme.borderRadius);
         }
-      } catch (err) {
-        console.error("Failed to load theme", err);
+      } catch (err: any) {
+        if (err?.message?.includes('offline')) {
+          console.warn('App is running in offline mode. Using default theme.');
+        } else {
+          console.error("Failed to load theme", err);
+        }
       } finally {
         setThemeLoaded(true);
       }

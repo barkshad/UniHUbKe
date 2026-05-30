@@ -39,8 +39,12 @@ export const Home = () => {
           displayListings = properties.slice(0, 6);
         }
         setFeaturedListings(displayListings);
-      } catch (err) {
-        console.error("Error fetching homepage data", err);
+      } catch (err: any) {
+        if (err?.message?.includes('offline')) {
+          console.warn('App is running in offline mode. Home page data may be limited.');
+        } else {
+          console.error("Error fetching homepage data", err);
+        }
       }
     };
     fetchData();

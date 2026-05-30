@@ -5,6 +5,7 @@ import { MapPin, Building, PlayCircle, Star } from 'lucide-react';
 import { Property } from '../types';
 import { cn, formatCurrency } from '../lib/utils';
 import { optimizeCloudinaryUrl, getCloudinaryPosterNode } from '../lib/optimizeMedia';
+import { HLSVideoPlayer } from './HLSVideoPlayer';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -19,8 +20,6 @@ interface ListingCardProps {
 
 export const ListingCard: React.FC<ListingCardProps> = ({ property, index = 0, onMouseEnter, onMouseLeave }) => {
   const mediaItem = (property.media && property.media.length > 0) ? property.media[0] : null;
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [isMediaLoaded, setIsMediaLoaded] = useState(false);
   const mediaErrorState = useState(false);
@@ -56,43 +55,7 @@ export const ListingCard: React.FC<ListingCardProps> = ({ property, index = 0, o
     return () => ctx.revert();
   }, [index]);
 
-  // Intersection observer for smart autoplay
-  useEffect(() => {
-    if (!videoRef.current) return;
-    
-    // Attempt preload for video if not hovered yet
-    videoRef.current.load();
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            // Autoplay when visible and mostly centered.
-            // Using a timeout prevents play() / pause() race condition errors if users scroll fast
-            const playPromise = videoRef.current?.play();
-            if (playPromise !== undefined) {
-              playPromise.then(() => {
-                setIsPlaying(true);
-              }).catch(() => {
-                // Autoplay may be blocked by browser policies
-                setIsPlaying(false);
-              });
-            }
-          } else {
-            videoRef.current?.pause();
-            setIsPlaying(false);
-          }
-        });
-      },
-      { threshold: 0.6 } // Needs to be 60% visible to autoplay
-    );
-
-    observer.observe(videoRef.current);
-    
-    return () => {
-      if (videoRef.current) observer.unobserve(videoRef.current);
-    };
-  }, [mediaItem]);
+  // Intersection observer logic is now handled internally by HLSVideoPlayer
 
   function handleMouseMove({ currentTarget, clientX, clientY }: React.MouseEvent) {
     const { left, top } = currentTarget.getBoundingClientRect();
@@ -148,31 +111,15 @@ export const ListingCard: React.FC<ListingCardProps> = ({ property, index = 0, o
             {mediaItem && !mediaError ? (
               <>
                 {mediaItem.resource_type === 'video' ? (
-                  <video 
-                    ref={(el) => {
-                      // Attach to both the local ref and check readyState
-                      // Assign inner ref for IntersectionObserver
-                      if (el) {
-                        (videoRef as any).current = el;
-                        if (el.readyState >= 2) {
-                          setIsMediaLoaded(true);
-                        }
-                      }
-                    }}
-                    src={optimizedUrl} 
+                  <HLSVideoPlayer
+                    src={mediaItem.secure_url}
                     poster={posterUrl}
-                    onLoadedData={() => setIsMediaLoaded(true)}
-                    onError={() => setMediaError(true)}
+                    onMediaLoaded={() => setIsMediaLoaded(true)}
                     className={cn(
-                      "w-full h-full object-cover transition-all duration-1000 transform origin-center",
+                      "w-full h-full transition-all duration-1000 transform origin-center",
                       isHovered ? "scale-110" : "scale-100",
-                      isPlaying ? "opacity-100" : "opacity-80 object-center",
                       isMediaLoaded ? "opacity-100" : "opacity-0"
                     )}
-                    muted 
-                    loop 
-                    playsInline
-                    preload="metadata"
                   />
                 ) : (
                   <img 
@@ -196,7 +143,7 @@ export const ListingCard: React.FC<ListingCardProps> = ({ property, index = 0, o
                 {mediaItem.resource_type === 'video' && (
                   <div className={cn(
                     "absolute inset-0 flex items-center justify-center bg-black/20 backdrop-blur-[2px] transition-all duration-500 pointer-events-none z-10",
-                    isHovered || isPlaying ? "opacity-0" : "opacity-100"
+                    isHovered ? "opacity-0" : "opacity-100"
                   )}>
                     <div className="w-16 h-16 rounded-full bg-white/10 border border-white/20 flex items-center justify-center backdrop-blur-md">
                       <PlayCircle className="w-8 h-8 text-white" />

@@ -21,7 +21,11 @@ export const AboutPage = () => {
           setTeamMembers(settings.teamMembers);
         }
       } catch (err) {
-        console.error("Failed to load team members:", err);
+        if (err?.message?.includes('offline')) {
+          console.warn('App is running in offline mode. Team data may be limited.');
+        } else {
+          console.error("Failed to load team members:", err);
+        }
       }
     };
     fetchTeam();
