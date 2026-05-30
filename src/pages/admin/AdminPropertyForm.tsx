@@ -208,7 +208,7 @@ export const AdminPropertyForm = () => {
             {media.map((item, idx) => (
               <div key={idx} className="relative aspect-square bg-zinc-950 rounded-xl overflow-hidden border border-zinc-800 group">
                 {item.resource_type === 'video' ? (
-                  <video src={optimizeCloudinaryUrl(item.secure_url, 'video')} className="w-full h-full object-cover" />
+                  <video src={optimizeCloudinaryUrl(item.secure_url, 'video')} className="w-full h-full object-cover" autoPlay muted loop playsInline />
                 ) : (
                   <img src={optimizeThumbnailUrl(item.secure_url)} alt="" className="w-full h-full object-cover" />
                 )}

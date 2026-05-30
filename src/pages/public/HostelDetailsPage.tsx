@@ -65,6 +65,10 @@ export const HostelDetailsPage = () => {
                         src={selectedRoom.media[0].url}
                         controls
                         className="w-full h-full object-cover"
+                        autoPlay
+                        muted
+                        loop
+                        playsInline
                       />
                     ) : (
                       <img

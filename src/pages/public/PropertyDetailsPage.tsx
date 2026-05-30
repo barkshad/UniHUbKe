@@ -131,6 +131,8 @@ export const PropertyDetailsPage = () => {
                     controls 
                     autoPlay
                     muted
+                    loop
+                    playsInline
                   />
                 ) : (
                   <img 

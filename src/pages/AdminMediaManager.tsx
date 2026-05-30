@@ -72,7 +72,7 @@ export const AdminMediaManager = () => {
             {heroMedia.map((url, i) => (
               <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} key={i} className="group relative rounded-xl overflow-hidden aspect-video bg-surface-900 border border-white/10">
                 {url.match(/\.(mp4|webm|ogg|quicktime|mov)$/i) ? (
-                  <video src={optimizeCloudinaryUrl(url, 'video')} className="w-full h-full object-cover" autoPlay muted loop />
+                  <video src={optimizeCloudinaryUrl(url, 'video')} className="w-full h-full object-cover" autoPlay muted loop playsInline />
                 ) : (
                   <img src={optimizeCloudinaryUrl(url, 'image')} className="w-full h-full object-cover" alt="" />
                 )}

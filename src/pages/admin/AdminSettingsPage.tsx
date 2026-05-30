@@ -75,7 +75,7 @@ export const AdminSettingsPage = () => {
                 {settings.heroImage ? (
                   <div className="relative aspect-video rounded-xl overflow-hidden border border-zinc-700 bg-black group">
                     {settings.heroImage.match(/\.(mp4|webm)$/i) ? (
-                       <video src={settings.heroImage} autoPlay loop muted className="w-full h-full object-cover" />
+                       <video src={settings.heroImage} autoPlay loop muted playsInline className="w-full h-full object-cover" />
                     ) : (
                        <img src={settings.heroImage} className="w-full h-full object-cover" alt="Hero" />
                     )}

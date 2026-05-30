@@ -281,7 +281,7 @@ export const AdminHostelForm = () => {
                {(formData.images || []).map((img, i) => (
                   <div key={i} className="aspect-square bg-zinc-950 rounded-lg border border-zinc-800 overflow-hidden relative group">
                      {img.resource_type === 'video' ? (
-                       <video src={img.secure_url} className="w-full h-full object-cover" controls />
+                       <video src={img.secure_url} className="w-full h-full object-cover" autoPlay muted loop playsInline />
                      ) : (
                        <img src={img.secure_url} className="w-full h-full object-cover" alt="Media" />
                      )}
