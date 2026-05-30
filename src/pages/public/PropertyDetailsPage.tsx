@@ -5,7 +5,6 @@ import { Property, Agent } from '../../types';
 import { getProperty, getAgent } from '../../services/firestore';
 import { formatCurrency, generateWhatsAppLink, cn } from '../../lib/utils';
 import { optimizeCloudinaryUrl, getCloudinaryPosterNode, optimizeThumbnailUrl } from '../../lib/optimizeMedia';
-import { HLSVideoPlayer } from '../../components/HLSVideoPlayer';
 import { motion } from 'motion/react';
 
 import { Skeleton } from '../../components/Skeleton';
@@ -114,16 +113,22 @@ export const PropertyDetailsPage = () => {
 
               {currentMedia && !mediaError ? (
                 currentMedia.resource_type === 'video' ? (
-                  <HLSVideoPlayer
-                    key={currentMedia.secure_url}
-                    src={currentMedia.secure_url}
+                  <video 
+                    key={optimizedUrl}
+                    src={optimizedUrl} 
                     poster={currentPoster}
-                    onMediaLoaded={() => setIsMediaLoaded(true)}
+                    onLoadedData={() => setIsMediaLoaded(true)}
+                    onError={() => setMediaError(true)}
+                    ref={(el) => {
+                      if (el && el.readyState >= 2) {
+                        setIsMediaLoaded(true);
+                      }
+                    }}
                     className={cn(
-                      "w-full h-full transition-opacity duration-700",
+                      "w-full h-full object-cover transition-opacity duration-700",
                       isMediaLoaded ? "opacity-100" : "opacity-0"
                     )}
-                    controls
+                    controls 
                     autoPlay
                     muted
                   />

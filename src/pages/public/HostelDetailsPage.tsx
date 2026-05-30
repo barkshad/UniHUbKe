@@ -4,7 +4,6 @@ import { getHostelRooms, getHostel } from '../../services/firestore';
 import { motion, AnimatePresence } from 'motion/react';
 import { Video, Users, ArrowLeft } from 'lucide-react';
 import { useParams, Link } from 'react-router-dom';
-import { HLSVideoPlayer } from '../../components/HLSVideoPlayer';
 
 export const HostelDetailsPage = () => {
   const { id } = useParams();
@@ -62,10 +61,10 @@ export const HostelDetailsPage = () => {
                 <>
                   <div className="aspect-video bg-zinc-900 rounded-lg overflow-hidden border border-zinc-800">
                     {selectedRoom.media[0].type === 'video' ? (
-                      <HLSVideoPlayer
+                      <video
                         src={selectedRoom.media[0].url}
                         controls
-                        className="w-full h-full"
+                        className="w-full h-full object-cover"
                       />
                     ) : (
                       <img
