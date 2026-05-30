@@ -155,6 +155,10 @@ export interface Property {
   price: number;
   deposit?: number;
   location: string;
+  coordinates?: {
+     lat: number;
+     lng: number;
+  };
   description: string;
   features: string[];
   agentId: string;

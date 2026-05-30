@@ -262,6 +262,17 @@ export async function createUniversity(data: Omit<University, 'id' | 'createdAt'
   });
 }
 
+export async function updateUniversity(id: string, data: Partial<University>) {
+  return await updateDoc(doc(db, 'universities', id), {
+    ...data,
+    updatedAt: serverTimestamp()
+  });
+}
+
+export async function deleteUniversity(id: string) {
+  return await deleteDoc(doc(db, 'universities', id));
+}
+
 export async function getHostels(universityId?: string): Promise<Hostel[]> {
   let qVar = query(collection(db, 'hostels'), orderBy('createdAt', 'desc'));
   if (universityId) {
@@ -278,10 +289,53 @@ export async function getHostel(id: string): Promise<Hostel | null> {
   return snap.exists() ? ({ id: snap.id, ...snap.data() } as Hostel) : null;
 }
 
+export async function createHostel(data: Omit<Hostel, 'id' | 'createdAt' | 'updatedAt'>) {
+  return await addDoc(collection(db, 'hostels'), {
+    ...data,
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp()
+  });
+}
+
+export async function updateHostel(id: string, data: Partial<Hostel>) {
+  return await updateDoc(doc(db, 'hostels', id), {
+    ...data,
+    updatedAt: serverTimestamp()
+  });
+}
+
+export async function deleteHostel(id: string) {
+  return await deleteDoc(doc(db, 'hostels', id));
+}
+
 export async function getHostelRooms(hostelId: string): Promise<HostelRoom[]> {
   const qVar = query(collection(db, 'hostel_rooms'), where('hostelId', '==', hostelId));
   const snap = await getDocs(qVar);
   return snap.docs.map(d => ({ id: d.id, ...d.data() } as HostelRoom));
+}
+
+export async function getHostelRoom(id: string): Promise<HostelRoom | null> {
+  const snap = await getDoc(doc(db, 'hostel_rooms', id));
+  return snap.exists() ? ({ id: snap.id, ...snap.data() } as HostelRoom) : null;
+}
+
+export async function createHostelRoom(data: Omit<HostelRoom, 'id' | 'createdAt' | 'updatedAt'>) {
+  return await addDoc(collection(db, 'hostel_rooms'), {
+    ...data,
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp()
+  });
+}
+
+export async function updateHostelRoom(id: string, data: Partial<HostelRoom>) {
+  return await updateDoc(doc(db, 'hostel_rooms', id), {
+    ...data,
+    updatedAt: serverTimestamp()
+  });
+}
+
+export async function deleteHostelRoom(id: string) {
+  return await deleteDoc(doc(db, 'hostel_rooms', id));
 }
 
 // -----------------------------------------

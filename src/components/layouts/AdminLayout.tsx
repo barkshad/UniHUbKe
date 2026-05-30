@@ -1,6 +1,6 @@
 import React from 'react';
 import { Outlet, NavLink } from 'react-router-dom';
-import { LayoutDashboard, Home, Users, Tag, Settings, LogOut, Menu, X, Monitor } from 'lucide-react';
+import { LayoutDashboard, Home, Users, Tag, Settings, LogOut, Menu, X, Monitor, School, Building } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { cn } from '../../lib/utils';
 import { useState } from 'react';
@@ -12,6 +12,8 @@ export const AdminLayout = () => {
   const navItems = [
     { to: '/admin', icon: <LayoutDashboard className="w-5 h-5" />, label: 'Dashboard', end: true },
     { to: '/admin/properties', icon: <Home className="w-5 h-5" />, label: 'Properties' },
+    { to: '/admin/universities', icon: <School className="w-5 h-5" />, label: 'Universities' },
+    { to: '/admin/hostels', icon: <Building className="w-5 h-5" />, label: 'Hostels' },
     { to: '/admin/cms', icon: <Monitor className="w-5 h-5" />, label: 'Site Builder' },
     { to: '/admin/agents', icon: <Users className="w-5 h-5" />, label: 'Agents' },
     { to: '/admin/categories', icon: <Tag className="w-5 h-5" />, label: 'Categories' },

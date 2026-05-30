@@ -27,6 +27,11 @@ import { AdminCMSPage } from './pages/admin/AdminCMSPage';
 import { SeederPage } from './pages/admin/SeederPage';
 import { ProtectedRoute } from './components/ProtectedRoute';
 
+import { AdminUniversitiesPage } from './pages/admin/AdminUniversitiesPage';
+import { AdminUniversityForm } from './pages/admin/AdminUniversityForm';
+import { AdminHostelsPage } from './pages/admin/AdminHostelsPage';
+import { AdminHostelForm } from './pages/admin/AdminHostelForm';
+
 import { AuthProvider } from './context/AuthContext';
 import { getSiteSettings } from './services/firestore';
 import { Toaster } from 'react-hot-toast';
@@ -106,6 +111,12 @@ export default function App() {
             <Route path="properties" element={<AdminPropertiesPage />} />
             <Route path="properties/new" element={<AdminPropertyForm />} />
             <Route path="properties/:id" element={<AdminPropertyForm />} />
+            <Route path="universities" element={<AdminUniversitiesPage />} />
+            <Route path="universities/new" element={<AdminUniversityForm />} />
+            <Route path="universities/:id" element={<AdminUniversityForm />} />
+            <Route path="hostels" element={<AdminHostelsPage />} />
+            <Route path="hostels/new" element={<AdminHostelForm />} />
+            <Route path="hostels/:id" element={<AdminHostelForm />} />
             <Route path="agents" element={<AdminAgentsPage />} />
             <Route path="categories" element={<AdminCategoriesPage />} />
             <Route path="settings" element={<AdminSettingsPage />} />
